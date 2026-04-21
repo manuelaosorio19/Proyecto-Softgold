@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-tree text-success me-2"></i>Impacto Ambiental</h2>
+            <p class="text-muted mb-0">Análisis de riesgos ambientales por mina.</p>
+        </div>
+        <a th:href="@{/admin/informes}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Dashboard
+        </a>
+    </div>
+
+    <!-- Resumen -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4 sg-kpi-card">
+                <i class="bi bi-exclamation-triangle-fill fs-2 text-danger mb-2"></i>
+                <div class="display-6 fw-bold" th:text="${totalRiesgos}">0</div>
+                <small class="text-muted">Riesgos identificados</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4 sg-kpi-card">
+                <i class="bi bi-gem fs-2 text-warning mb-2"></i>
+                <div class="display-6 fw-bold" th:text="${minas != null ? minas.size() : 0}">0</div>
+                <small class="text-muted">Minas activas</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm text-center p-4 sg-kpi-card">
+                <i class="bi bi-shield-check fs-2 text-success mb-2"></i>
+                <div class="display-6 fw-bold" th:text="${minas != null ? minas.size() - (minas.?[riesgos.size() > 0]).size() : 0}">0</div>
+                <small class="text-muted">Minas sin riesgos</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de riesgos por mina -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header sg-card-header">
+            <h6 class="mb-0 fw-bold"><i class="bi bi-table me-2"></i>Riesgos por Mina</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="sg-table-header">
+                        <tr>
+                            <th class="ps-4">Mina</th>
+                            <th>Departamento</th>
+                            <th class="text-center">N° Riesgos</th>
+                            <th>Riesgos Asociados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="mina : ${minas}">
+                            <td class="ps-4 fw-semibold" th:text="${mina.nombre}"></td>
+                            <td th:text="${mina.departamento}"></td>
+                            <td class="text-center">
+                                <span th:if="${mina.riesgos != null and !mina.riesgos.isEmpty()}"
+                                      class="badge bg-danger rounded-pill" th:text="${mina.riesgos.size()}"></span>
+                                <span th:unless="${mina.riesgos != null and !mina.riesgos.isEmpty()}"
+                                      class="badge bg-success rounded-pill">0</span>
+                            </td>
+                            <td>
+                                <span th:if="${mina.riesgos != null and !mina.riesgos.isEmpty()}">
+                                    <span th:each="r, i : ${mina.riesgos}">
+                                        <span class="badge bg-warning text-dark me-1 mb-1" th:text="${r.descripcion}"></span>
+                                    </span>
+                                </span>
+                                <span th:unless="${mina.riesgos != null and !mina.riesgos.isEmpty()}"
+                                      class="text-muted small">Sin riesgos registrados</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Listado de todos los riesgos -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header sg-card-header">
+            <h6 class="mb-0 fw-bold"><i class="bi bi-list-ul me-2"></i>Catálogo de Riesgos</h6>
+        </div>
+        <div class="card-body">
+            <div th:if="${riesgos == null or riesgos.isEmpty()}" class="text-muted text-center py-3">
+                No hay riesgos registrados.
+            </div>
+            <div class="row g-2" th:unless="${riesgos == null or riesgos.isEmpty()}">
+                <div th:each="riesgo : ${riesgos}" class="col-md-4 col-lg-3">
+                    <div class="card border-danger border-1 shadow-none">
+                        <div class="card-body py-2 px-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-exclamation-triangle text-danger"></i>
+                                <span class="small fw-semibold" th:text="${riesgo.descripcion}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>

@@ -4,6 +4,9 @@ import com.proyectoL.softgold.model.PasswordResetToken;
 import com.proyectoL.softgold.model.Usuario;
 import com.proyectoL.softgold.repository.PasswordResetTokenDAO;
 import com.proyectoL.softgold.repository.UsuarioDAO;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -103,5 +106,11 @@ public class PasswordResetService implements PasswordResetServiceIface {
 
     private String generateRandomToken() {
         return java.util.UUID.randomUUID().toString(); // el UUID es un identificador único universal
+    }
+
+    @Transactional
+    @Override
+    public void deleteTokensByUsuarioId(Long usuarioId) {
+        passwordResetTokenDAO.deleteByUsuarioId(usuarioId);
     }
 }

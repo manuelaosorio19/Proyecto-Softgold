@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.proyectoL.softgold.model.Mina;
 
 @Repository
-public interface MinaDAO extends JpaRepository<Mina, Long> {
+public interface MinaDAO extends JpaRepository<Mina, Long> { // metodos extras
     Mina findByNombre(String nombre);
 
     Mina findByCodMina(Long codMina);

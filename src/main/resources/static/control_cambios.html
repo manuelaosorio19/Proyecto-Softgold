@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control de Cambios - Sofgold</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      padding: 30px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      padding: 25px 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #b8860b;
+      border-bottom: 2px solid #b8860b;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      color: #444;
+      margin-top: 25px;
+      border-left: 4px solid #b8860b;
+      padding-left: 10px;
+    }
+
+    p {
+      line-height: 1.6;
+    }
+
+    .item {
+      margin-bottom: 15px;
+    }
+
+    .label {
+      font-weight: bold;
+      display: inline-block;
+      width: 160px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 0.9em;
+      color: #777;
+    }
+
+    .btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 25px;
+      background-color: #b8860b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    .btn:hover {
+      background-color: #8b6508;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1e5b2;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Control de Cambios - Sofgold</h1>
+
+    <div class="item"><span class="label">Código del cambio:</span> CC-001</div>
+    <div class="item"><span class="label">Fecha de solicitud:</span> 06/11/2025</div>
+    <div class="item"><span class="label">Solicitante:</span> manuela.osorio</div>
+    <div class="item"><span class="label">Área afectada:</span> Módulo de eventos</div>
+    <div class="item"><span class="label">Descripción del cambio:</span> Ajuste en el panel de eventos para mejorar la carga de datos.</div>
+
+    <h2>1. Solicitud de cambio</h2>
+    <p>Se reporta un problema en la carga del módulo de eventos. El cambio busca optimizar las consultas y reducir el tiempo de respuesta del sistema Sofgold Mina.</p>
+
+    <h2>2. Evaluación del impacto</h2>
+    <table>
+      <tr><th>Aspecto</th><th>Impacto</th></tr>
+      <tr><td>Usuarios</td><td>Mínimo, mejora la experiencia de uso.</td></tr>
+      <tr><td>Rendimiento</td><td>Se espera una reducción del tiempo de carga en un 30%.</td></tr>
+      <tr><td>Dependencias</td><td>El cambio afecta solo el módulo de eventos.</td></tr>
+    </table>
+
+    <h2>3. Aprobación</h2>
+    <p><strong>Responsable:</strong> Equipo de desarrollo Sofgold<br>
+       <strong>Fecha de aprobación:</strong> 06/11/2025<br>
+       <strong>Estado:</strong> Aprobado para implementación</p>
+
+    <h2>4. Implementación</h2>
+    <p>Se actualiza el código fuente del módulo <em>eventos.js</em> y las consultas en <em>eventosService.java</em> para optimizar la carga. Se registran los cambios en el control de versiones GitHub con etiqueta <strong>v1.2.1</strong>.</p>
+
+    <h2>5. Pruebas y cierre</h2>
+    <p>Pruebas realizadas en entorno de desarrollo el 06/11/2025.<br>
+    Resultados satisfactorios. Se confirma la mejora del rendimiento y la correcta carga de eventos.<br>
+    <strong>Estado final:</strong> Cerrado</p>
+
+    <button class="btn" onclick="window.print()">Imprimir Control de Cambios</button>
+
+    <div class="footer">Sistema Sofgold - Control de Cambios © 2025</div>
+  </div>
+
+</body>
+</html>

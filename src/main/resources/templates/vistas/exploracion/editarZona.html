@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Panel</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/exploracion}">Exploración</a></li>
+                    <li class="breadcrumb-item active">Editar Zona</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header sg-card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-pencil-square fs-5 text-warning"></i>
+                    <h5 class="mb-0 fw-bold">Editar Zona
+                        <span class="badge bg-secondary ms-2" th:text="'#' + ${zona.id}"></span>
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" th:text="${mensajeExito}">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <form th:action="@{/admin/exploracion/editar/{id}(id=${zona.id})}" th:object="${zona}" method="post">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label fw-semibold">Nombre <span class="text-danger">*</span></label>
+                                <input type="text" th:field="*{nombre}" class="form-control" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-semibold">Mina Asociada</label>
+                                <select th:field="*{mina}" class="form-select">
+                                    <option value="">Sin mina</option>
+                                    <option th:each="m : ${minas}"
+                                            th:value="${m.codMina}" th:text="${m.nombre}"
+                                            th:selected="${zona.mina != null and zona.mina.codMina == m.codMina}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Tipo</label>
+                                <select th:field="*{tipo}" class="form-select">
+                                    <option value="ACTIVA">Activa</option>
+                                    <option value="POTENCIAL">Potencial</option>
+                                    <option value="INACTIVA">Inactiva</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Estado</label>
+                                <select th:field="*{estado}" class="form-select">
+                                    <option value="EN_EXPLORACION">En Exploración</option>
+                                    <option value="PENDIENTE">Pendiente</option>
+                                    <option value="CERRADA">Cerrada</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Descripción</label>
+                                <textarea th:field="*{descripcion}" class="form-control" rows="3" maxlength="1000"></textarea>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+                        <h6 class="fw-bold mb-1"><i class="bi bi-geo-alt-fill text-danger me-1"></i>Ubicación</h6>
+                        <p class="text-muted small mb-2">Haz clic en el mapa para cambiar la ubicación o arrastra el marcador.</p>
+
+                        <div id="leafletMap" class="sg-map-container mb-3"></div>
+
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label class="form-label small">Latitud</label>
+                                <input type="number" th:field="*{latitud}" id="latitud" class="form-control" step="any">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small">Longitud</label>
+                                <input type="number" th:field="*{longitud}" id="longitud" class="form-control" step="any">
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-warning px-4">
+                                <i class="bi bi-check-lg me-1"></i>Actualizar
+                            </button>
+                            <a th:href="@{/admin/exploracion}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left me-1"></i>Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+
+<script th:inline="javascript">
+    const INIT_LAT = /*[[${zona.latitud}]]*/ null;
+    const INIT_LNG = /*[[${zona.longitud}]]*/ null;
+</script>
+<script>
+    const initLat = (INIT_LAT !== null && !isNaN(INIT_LAT)) ? parseFloat(INIT_LAT) : null;
+    const initLng = (INIT_LNG !== null && !isNaN(INIT_LNG)) ? parseFloat(INIT_LNG) : null;
+
+    const map = L.map('leafletMap').setView(
+        (initLat && initLng) ? [initLat, initLng] : [4.7109, -74.0721],
+        (initLat && initLng) ? 12 : 6
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    let marker = null;
+
+    if (initLat && initLng) {
+        marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
+        marker.on('dragend', function(e) { setPoint(e.target.getLatLng()); });
+    }
+
+    function setPoint(latlng) {
+        const lat = latlng.lat.toFixed(6);
+        const lng = latlng.lng.toFixed(6);
+        document.getElementById('latitud').value = lat;
+        document.getElementById('longitud').value = lng;
+        if (marker) {
+            marker.setLatLng(latlng);
+        } else {
+            marker = L.marker(latlng, { draggable: true }).addTo(map);
+            marker.on('dragend', function(e) { setPoint(e.target.getLatLng()); });
+        }
+    }
+
+    map.on('click', function(e) { setPoint(e.latlng); });
+</script>
+</body>
+</html>

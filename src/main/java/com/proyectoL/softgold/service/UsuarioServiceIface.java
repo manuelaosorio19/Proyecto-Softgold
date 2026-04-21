@@ -18,4 +18,5 @@ public interface UsuarioServiceIface {
 
     boolean incrementarIntentosFallidos(String email);
 
+    void actualizarPassword(String email, String newEncodedPassword);
 }

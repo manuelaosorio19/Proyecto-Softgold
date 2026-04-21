@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Panel</a></li>
+                    <li class="breadcrumb-item active">Guía de Seguridad / Niveles de Servicio</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header sg-card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-shield-check fs-5 text-success"></i>
+                    <div>
+                        <h5 class="mb-0 fw-bold">Gestión de Niveles de Servicio</h5>
+                        <small class="text-muted">Métricas de rendimiento y disponibilidad del sistema SoftGold</small>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+
+                    <h6 class="fw-bold mb-3 text-success"><i class="bi bi-bar-chart me-1"></i>Métricas Definidas</h6>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="sg-table-header">
+                                <tr>
+                                    <th>Métrica</th>
+                                    <th>Descripción</th>
+                                    <th>Objetivo</th>
+                                    <th>Resultado Actual</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fw-semibold">Disponibilidad del sistema</td>
+                                    <td>Tiempo que el sistema está operativo</td>
+                                    <td>99%</td>
+                                    <td>99.3%</td>
+                                    <td><span class="badge bg-success rounded-pill"><i class="bi bi-check-circle me-1"></i>Cumplido</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">Tiempo de respuesta</td>
+                                    <td>Tiempo promedio de carga de una página</td>
+                                    <td>&lt; 2s</td>
+                                    <td>1.74s</td>
+                                    <td><span class="badge bg-success rounded-pill"><i class="bi bi-check-circle me-1"></i>Cumplido</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">Satisfacción del usuario</td>
+                                    <td>Evaluación promedio de feedback</td>
+                                    <td>≥ 8/10</td>
+                                    <td>8.6 / 10</td>
+                                    <td><span class="badge bg-success rounded-pill"><i class="bi bi-check-circle me-1"></i>Cumplido</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h6 class="fw-bold mb-3 text-success"><i class="bi bi-terminal me-1"></i>Logs del Sistema</h6>
+                    <div style="background:#0d1117;color:#00ff41;font-family:'Courier New',monospace;padding:1rem;border-radius:8px;height:180px;overflow-y:auto;font-size:0.82rem;line-height:1.6;">
+                        [06/11/2025 08:00:01] INFO: Sistema SoftGold inicializado correctamente.<br>
+                        [06/11/2025 08:00:03] INFO: Tiempo de respuesta promedio: 1.84s<br>
+                        [06/11/2025 08:10:22] INFO: Solicitud de datos del módulo Mina → 1.72s<br>
+                        [06/11/2025 08:15:17] INFO: Solicitud de exploración → 1.69s<br>
+                        [06/11/2025 08:20:05] INFO: Uptime 99.3% verificado<br>
+                        [06/11/2025 08:25:44] INFO: Feedback recibido - Usuario: "Muy satisfecho, sistema estable" (9/10)<br>
+                        [06/11/2025 08:30:00] INFO: Monitoreo de rendimiento completado sin alertas.<br>
+                    </div>
+
+                </div>
+                <div class="card-footer sg-card-header text-end">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i>Imprimir Reporte
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>

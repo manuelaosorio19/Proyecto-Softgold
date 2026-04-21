@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Panel</a></li>
+                    <li class="breadcrumb-item active">Control de Cambios</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header sg-card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-clock-history fs-5 text-secondary"></i>
+                    <div>
+                        <h5 class="mb-0 fw-bold">Control de Cambios</h5>
+                        <small class="text-muted">Registro y seguimiento de cambios en el sistema SoftGold</small>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-0" style="background:rgba(0,0,0,0.03);border-radius:10px;">
+                                <div class="card-body py-2 px-3">
+                                    <p class="mb-1"><span class="text-muted small fw-semibold">CÓDIGO DEL CAMBIO</span></p>
+                                    <p class="fw-bold mb-0">CC-001</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0" style="background:rgba(0,0,0,0.03);border-radius:10px;">
+                                <div class="card-body py-2 px-3">
+                                    <p class="mb-1"><span class="text-muted small fw-semibold">FECHA DE SOLICITUD</span></p>
+                                    <p class="fw-bold mb-0">06/11/2025</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0" style="background:rgba(0,0,0,0.03);border-radius:10px;">
+                                <div class="card-body py-2 px-3">
+                                    <p class="mb-1"><span class="text-muted small fw-semibold">SOLICITANTE</span></p>
+                                    <p class="fw-bold mb-0">manuela.osorio</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0" style="background:rgba(0,0,0,0.03);border-radius:10px;">
+                                <div class="card-body py-2 px-3">
+                                    <p class="mb-1"><span class="text-muted small fw-semibold">ÁREA AFECTADA</span></p>
+                                    <p class="fw-bold mb-0">Módulo de eventos</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="fw-bold border-start border-4 border-warning ps-2 mb-2">1. Solicitud de Cambio</h6>
+                        <p class="text-muted">Se reporta un problema en la carga del módulo de eventos. El cambio busca optimizar las consultas y reducir el tiempo de respuesta del sistema SoftGold Mina.</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="fw-bold border-start border-4 border-warning ps-2 mb-2">2. Evaluación del Impacto</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle">
+                                <thead class="sg-table-header">
+                                    <tr><th>Aspecto</th><th>Impacto</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td class="fw-semibold">Usuarios</td><td>Mínimo, mejora la experiencia de uso.</td></tr>
+                                    <tr><td class="fw-semibold">Rendimiento</td><td>Se espera una reducción del tiempo de carga en un 30%.</td></tr>
+                                    <tr><td class="fw-semibold">Dependencias</td><td>El cambio afecta solo el módulo de eventos.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="fw-bold border-start border-4 border-warning ps-2 mb-2">3. Aprobación</h6>
+                        <p class="mb-1"><strong>Responsable:</strong> Equipo de desarrollo SoftGold</p>
+                        <p class="mb-1"><strong>Fecha de aprobación:</strong> 06/11/2025</p>
+                        <p class="mb-0"><strong>Estado:</strong> <span class="badge bg-success">Aprobado para implementación</span></p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="fw-bold border-start border-4 border-warning ps-2 mb-2">4. Implementación</h6>
+                        <p class="text-muted">Se actualiza el código fuente del módulo <code>eventos.js</code> y las consultas en <code>eventosService.java</code> para optimizar la carga. Se registran los cambios en el control de versiones GitHub con etiqueta <strong>v1.2.1</strong>.</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="fw-bold border-start border-4 border-warning ps-2 mb-2">5. Pruebas y Cierre</h6>
+                        <p class="text-muted mb-1">Pruebas realizadas en entorno de desarrollo el 06/11/2025.</p>
+                        <p class="text-muted mb-1">Resultados satisfactorios. Se confirma la mejora del rendimiento y la correcta carga de eventos.</p>
+                        <p class="mb-0"><strong>Estado final:</strong> <span class="badge bg-secondary">Cerrado</span></p>
+                    </div>
+
+                </div>
+                <div class="card-footer sg-card-header text-end">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i>Imprimir
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>

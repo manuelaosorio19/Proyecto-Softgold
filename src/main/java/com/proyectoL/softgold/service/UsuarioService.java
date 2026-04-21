@@ -88,6 +88,18 @@ public class UsuarioService implements UsuarioServiceIface {
 
         Usuario usuario = usuarioOpt.get();
 
+        // NO bloquear ni incrementar intentos si es ADMINISTRADOR
+        if ("ADMINISTRADOR".equalsIgnoreCase(usuario.getTipoUsuario())) {
+            usuario.setIntentosFallidos(0);
+            usuario.setBloqueado(false);
+            usuario.setTiempoBloqueo(null);
+            usuarioDAO.save(usuario);
+            if (!passwordEncoder.matches(password, usuario.getPassword())) {
+                throw new RuntimeException("Credenciales inválidas.");
+            }
+            return;
+        }
+
         if (usuario.isBloqueado()) {
             if (usuario.getTiempoBloqueo() != null
                     && usuario.getTiempoBloqueo().plusMinutes(15).isBefore(LocalDateTime.now())) {
@@ -147,6 +159,15 @@ public class UsuarioService implements UsuarioServiceIface {
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
 
+            // NO bloquear ni incrementar intentos si es ADMINISTRADOR
+            if ("ADMINISTRADOR".equalsIgnoreCase(usuario.getTipoUsuario())) {
+                usuario.setIntentosFallidos(0);
+                usuario.setBloqueado(false);
+                usuario.setTiempoBloqueo(null);
+                usuarioDAO.save(usuario);
+                return false;
+            }
+
             // Si está bloqueado
             if (usuario.isBloqueado()) {
                 // y ya pasaron los 15 minutos
@@ -187,6 +208,15 @@ public class UsuarioService implements UsuarioServiceIface {
         } else {
             throw new RuntimeException("Usuario no encontrado con el email: " + email);
         }
+    }
+
+    @Override
+    @Transactional
+    public void actualizarPassword(String email, String newEncodedPassword) {
+        usuarioDAO.findByEmail(email).ifPresent(usuario -> {
+            usuario.setPassword(newEncodedPassword);
+            usuarioDAO.save(usuario);
+        });
     }
 
     public boolean isAccountNonLocked(Usuario usuario) {

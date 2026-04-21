@@ -35,6 +35,9 @@ public class MineroController {
     @Autowired
     private MinaDAO minaDAO;
 
+    @Autowired
+    private com.proyectoL.softgold.service.PasswordResetService passwordResetService;
+
     // Listar mineros
     @GetMapping("")
     public String listarMineros(Model model) {
@@ -160,12 +163,7 @@ public class MineroController {
     // Eliminar un minero
     @GetMapping("/eliminar/{id}")
     public String eliminarMinero(@PathVariable Long id, RedirectAttributes redirectAttrs) {
-        Optional<Usuario> usuarioOpt = usuarioDAO.findById(id);
-        if (usuarioOpt.isEmpty() || !usuarioOpt.get().getTipoUsuario().equals("MINERO")) {
-            redirectAttrs.addFlashAttribute("error", "Minero no encontrado.");
-            return "redirect:/admin/usuarios/mineros";
-        }
-
+        passwordResetService.deleteTokensByUsuarioId(id);
         usuarioDAO.deleteById(id);
         redirectAttrs.addFlashAttribute("exito", "Minero eliminado correctamente.");
         return "redirect:/admin/usuarios/mineros";

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header sg-card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-star-fill fs-5 text-warning"></i>
+                    <div>
+                        <h5 class="mb-0 fw-bold">Formulario de Satisfacción</h5>
+                        <small class="text-muted">Tu opinión nos ayuda a mejorar el sistema</small>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+
+                    <div id="alertaExito" class="alert alert-success d-none" role="alert">
+                        <i class="bi bi-check-circle me-1"></i>¡Gracias por tu feedback! Tu respuesta ha sido registrada.
+                    </div>
+
+                    <form id="feedbackForm" novalidate>
+
+                        <div class="mb-3">
+                            <label for="nombreUsuario" class="form-label fw-semibold">
+                                Nombre de usuario <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" class="form-control" id="nombreUsuario"
+                                   placeholder="Ej. andrea.rojas" required
+                                   th:value="${currentUsername != null} ? ${currentUsername} : ''">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                Nivel de satisfacción <span class="text-danger">*</span>
+                            </label>
+                            <div class="d-flex gap-2 flex-wrap" id="satisfaccionBtns">
+                                <button type="button" class="btn btn-outline-secondary sat-btn" data-val="1">1</button>
+                                <button type="button" class="btn btn-outline-secondary sat-btn" data-val="2">2</button>
+                                <button type="button" class="btn btn-outline-secondary sat-btn" data-val="3">3</button>
+                                <button type="button" class="btn btn-outline-secondary sat-btn" data-val="4">4</button>
+                                <button type="button" class="btn btn-outline-secondary sat-btn" data-val="5">5</button>
+                                <button type="button" class="btn btn-outline-warning sat-btn" data-val="6">6</button>
+                                <button type="button" class="btn btn-outline-warning sat-btn" data-val="7">7</button>
+                                <button type="button" class="btn btn-outline-success sat-btn" data-val="8">8</button>
+                                <button type="button" class="btn btn-outline-success sat-btn" data-val="9">9</button>
+                                <button type="button" class="btn btn-outline-success sat-btn" data-val="10">10</button>
+                            </div>
+                            <input type="hidden" id="satisfaccionVal" required>
+                            <div class="small text-muted mt-1" id="satLabel">Selecciona una puntuación (1 = muy insatisfecho, 10 = muy satisfecho)</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="comentario" class="form-label fw-semibold">Comentarios o sugerencias</label>
+                            <textarea class="form-control" id="comentario" rows="4"
+                                      placeholder="Escribe aquí tus comentarios..."></textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-send-fill me-1"></i>Enviar Feedback
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+
+<script>
+(function () {
+    let satVal = null;
+    const btns = document.querySelectorAll('.sat-btn');
+    btns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            btns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            satVal = parseInt(this.dataset.val);
+            document.getElementById('satisfaccionVal').value = satVal;
+            const labels = ['', 'Muy insatisfecho', 'Insatisfecho', 'Poco insatisfecho', 'Regular', 'Neutro',
+                            'Aceptable', 'Satisfecho', 'Muy satisfecho', 'Excelente', 'Perfecto'];
+            document.getElementById('satLabel').textContent = satVal + '/10 — ' + labels[satVal];
+        });
+    });
+
+    document.getElementById('feedbackForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombreUsuario').value.trim();
+        const comentario = document.getElementById('comentario').value.trim();
+
+        if (!nombre || !satVal) {
+            alert('Por favor completa los campos obligatorios.');
+            return;
+        }
+
+        console.log('Feedback:', { nombre, satisfaccion: satVal, comentario });
+
+        document.getElementById('alertaExito').classList.remove('d-none');
+        this.reset();
+        btns.forEach(b => b.classList.remove('active'));
+        satVal = null;
+        document.getElementById('satisfaccionVal').value = '';
+        document.getElementById('satLabel').textContent = 'Selecciona una puntuación (1 = muy insatisfecho, 10 = muy satisfecho)';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        setTimeout(() => document.getElementById('alertaExito').classList.add('d-none'), 5000);
+    });
+})();
+</script>
+</body>
+</html>

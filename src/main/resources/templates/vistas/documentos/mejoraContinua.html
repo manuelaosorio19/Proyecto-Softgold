@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Panel</a></li>
+                    <li class="breadcrumb-item active">Mejora Continua</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header sg-card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-arrow-up-circle fs-5 text-info"></i>
+                    <div>
+                        <h5 class="mb-0 fw-bold">Mejora Continua</h5>
+                        <small class="text-muted">Feedback de usuarios y plan de mejora sprint actual</small>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+
+                    <h6 class="fw-bold mb-2 border-start border-4 border-info ps-2">Feedback de Usuarios</h6>
+                    <p class="text-muted small mb-3">Se recopilan los comentarios de los usuarios del sistema SoftGold durante la semana 1 de noviembre de 2025.</p>
+
+                    <div class="table-responsive mb-3">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="sg-table-header">
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th class="text-center">Satisfacción (1–10)</th>
+                                    <th>Comentario</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="fw-semibold">carlos.mina</td>
+                                    <td class="text-center"><span class="badge bg-success rounded-pill">9</span></td>
+                                    <td>El sistema carga rápido, pero faltan notificaciones automáticas.</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">andrea.rojas</td>
+                                    <td class="text-center"><span class="badge bg-success rounded-pill">8</span></td>
+                                    <td>Buena interfaz, sería útil un tutorial de ayuda al inicio.</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">juan.castillo</td>
+                                    <td class="text-center"><span class="badge bg-warning text-dark rounded-pill">7</span></td>
+                                    <td>El login demora un poco, pero en general funciona bien.</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-semibold">manuela.osorio</td>
+                                    <td class="text-center"><span class="badge bg-success rounded-pill">10</span></td>
+                                    <td>Excelente rendimiento y diseño, muy estable.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <span class="badge bg-success px-4 py-2 fs-6 rounded-pill">
+                            <i class="bi bi-star-fill me-1"></i>Promedio de satisfacción: 8.5 / 10
+                        </span>
+                    </div>
+
+                    <h6 class="fw-bold mb-2 border-start border-4 border-info ps-2">Plan de Mejora — Sprint 2</h6>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item d-flex align-items-center gap-2">
+                            <i class="bi bi-arrow-right-circle text-info"></i>Optimizar el tiempo de carga del login.
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2">
+                            <i class="bi bi-arrow-right-circle text-info"></i>Agregar un tutorial interactivo para nuevos usuarios.
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2">
+                            <i class="bi bi-arrow-right-circle text-info"></i>Implementar notificaciones automáticas por correo.
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2">
+                            <i class="bi bi-arrow-right-circle text-info"></i>Agregar indicador de progreso durante la carga del sistema.
+                        </li>
+                    </ul>
+
+                    <h6 class="fw-bold mb-2 border-start border-4 border-info ps-2">Próximas Acciones</h6>
+                    <p class="text-muted">El equipo de desarrollo evaluará los resultados después de implementar las mejoras en el siguiente sprint (del 10 al 17 de noviembre de 2025).</p>
+
+                </div>
+                <div class="card-footer sg-card-header text-end">
+                    <button class="btn btn-outline-secondary btn-sm" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i>Imprimir Reporte
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>

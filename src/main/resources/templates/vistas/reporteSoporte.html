@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Inicio</a></li>
+                    <li class="breadcrumb-item active">Soporte Técnico</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header sg-card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-headset fs-5 text-primary"></i>
+                    <div>
+                        <h5 class="mb-0 fw-bold" th:text="${titulo != null ? titulo : 'Reporte de Problema'}">Reporte de Problema</h5>
+                        <small class="text-muted">Describe tu problema y nos pondremos en contacto contigo.</small>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+
+                    <div th:if="${exito}" class="alert alert-success alert-dismissible fade show" th:text="${exito}">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+
+                    <form th:action="@{/soporte/reporte}" th:object="${supportTicket}" method="post" novalidate>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="nombre" class="form-label fw-semibold">
+                                    Nombre <span class="text-danger">*</span>
+                                </label>
+                                <input id="nombre" type="text" th:field="*{nombre}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('nombre')} ? ' is-invalid' : ''"
+                                       placeholder="Tu nombre completo" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('nombre')}"
+                                     th:errors="*{nombre}">Error</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="email" class="form-label fw-semibold">
+                                    Correo Electrónico <span class="text-danger">*</span>
+                                </label>
+                                <input id="email" type="email" th:field="*{email}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('email')} ? ' is-invalid' : ''"
+                                       placeholder="tu@correo.com" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}"
+                                     th:errors="*{email}">Error</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="tipo" class="form-label fw-semibold">
+                                    Tipo de Solicitud <span class="text-danger">*</span>
+                                </label>
+                                <select id="tipo" th:field="*{tipo}" class="form-select" required>
+                                    <option value="">Selecciona el tipo...</option>
+                                    <option value="INCIDENTE">Incidente</option>
+                                    <option value="ERROR">Error</option>
+                                    <option value="MEJORA">Mejora</option>
+                                    <option value="QUEJA">Queja</option>
+                                    <option value="PQR">PQR</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="asunto" class="form-label fw-semibold">
+                                    Asunto <span class="text-danger">*</span>
+                                </label>
+                                <input id="asunto" type="text" th:field="*{asunto}" class="form-control"
+                                       th:classappend="${#fields.hasErrors('asunto')} ? ' is-invalid' : ''"
+                                       placeholder="Breve resumen del problema" required>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('asunto')}"
+                                     th:errors="*{asunto}">Error</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="descripcion" class="form-label fw-semibold">
+                                    Descripción <span class="text-danger">*</span>
+                                </label>
+                                <textarea id="descripcion" th:field="*{descripcion}" class="form-control"
+                                          th:classappend="${#fields.hasErrors('descripcion')} ? ' is-invalid' : ''"
+                                          rows="6"
+                                          placeholder="Describe el problema con el mayor detalle posible..." required></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('descripcion')}"
+                                     th:errors="*{descripcion}">Error</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a th:href="@{/}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary px-4">
+                                <i class="bi bi-send-fill me-1"></i>Enviar Reporte
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-muted small text-center">
+                    <i class="bi bi-shield-lock me-1"></i>
+                    Se responderá al correo proporcionado. Evita compartir información sensible.
+                </div>
+            </div>
+
+            <!-- Info adicional -->
+            <div class="row g-3 mt-2">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm text-center p-3">
+                        <i class="bi bi-clock fs-3 text-primary mb-2"></i>
+                        <div class="fw-semibold small">Tiempo de Respuesta</div>
+                        <div class="text-muted small">24-48 horas hábiles</div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm text-center p-3">
+                        <i class="bi bi-star fs-3 text-warning mb-2"></i>
+                        <div class="fw-semibold small">Formulario de Satisfacción</div>
+                        <a th:href="@{/soporte/satisfaccion}" class="text-decoration-none small">Calificar servicio</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+
+<script>
+    (function() {
+        'use strict';
+        var forms = document.querySelectorAll('form[novalidate]');
+        Array.prototype.slice.call(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+</body>
+</html>

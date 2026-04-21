@@ -16,6 +16,8 @@
                         <h4 class="text-primary">Crear Empleado</h4>
                     </div>
                     <div class="card-body">
+                        <div th:if="${mensajeExito}" class="alert alert-success text-center" th:text="${mensajeExito}">
+                        </div>
                         <form th:action="@{/admin/usuarios/empleados/crear}" th:object="${usuario}" method="post">
                             <input type="hidden" th:field="*{tipoUsuario}" value="EMPLEADO" />
                             <input type="hidden" th:field="*{id}" />

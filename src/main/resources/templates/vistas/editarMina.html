@@ -1,56 +1,97 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="~{plantillas/principal :: head}"></head>
-
 <body>
-    <header th:replace="~{plantillas/principal :: header}"></header>
-    <main class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header text-center">
-                        <h4 class="text-primary">Editar Mina</h4>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Panel</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/minas}">Minas</a></li>
+                    <li class="breadcrumb-item active">Editar Mina</li>
+                </ol>
+            </nav>
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header sg-card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-pencil-square fs-5 text-warning"></i>
+                    <h5 class="mb-0 fw-bold">Editar Mina
+                        <span class="badge bg-warning text-dark ms-2" th:text="'#' + ${mina.codMina}"></span>
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" th:text="${mensajeExito}">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                    <div class="card-body">
-                        <form th:action="@{/admin/minas/editar/{id}(id=${mina.codMina})}" th:object="${mina}"
-                            method="post">
-                            <input type="hidden" th:field="*{codMina}" />
-                            <div class="mb-3">
-                                <label class="form-label">Nombre<span class="text-danger">*</span></label>
-                                <input type="text" th:field="*{nombre}" class="form-control" required>
-                                <div th:if="${#fields.hasErrors('nombre')}" class="text-danger">
-                                    <p th:errors="*{nombre}"></p>
+
+                    <form th:action="@{/admin/minas/editar/{id}(id=${mina.codMina})}"
+                          th:object="${mina}" method="post">
+                        <input type="hidden" th:field="*{codMina}" />
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Nombre <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" th:field="*{nombre}" class="form-control" required
+                                       placeholder="Nombre de la mina">
+                                <div th:if="${#fields.hasErrors('nombre')}" class="text-danger small mt-1">
+                                    <span th:errors="*{nombre}"></span>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Departamento<span class="text-danger">*</span></label>
-                                <input type="text" th:field="*{departamento}" class="form-control" required>
-                                <div th:if="${#fields.hasErrors('departamento')}" class="text-danger">
-                                    <p th:errors="*{departamento}"></p>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Departamento <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" th:field="*{departamento}" class="form-control" required
+                                       placeholder="Ej: Antioquia, Chocó">
+                                <div th:if="${#fields.hasErrors('departamento')}" class="text-danger small mt-1">
+                                    <span th:errors="*{departamento}"></span>
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Mapas</label>
-                                <select th:field="*{mapas}" class="form-select" multiple required>
-                                    <option th:each="mapa : ${mapas}" th:value="${mapa.codigoMapa}"
-                                        th:text="${mapa.coordenadas}">
-                                    </option>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Mapas Asociados</label>
+                                <select th:field="*{mapas}" class="form-select" multiple size="4">
+                                    <option th:each="mapa : ${mapas}"
+                                            th:value="${mapa.codigoMapa}"
+                                            th:text="${mapa.descripcion + ' (' + mapa.coordenadas + ')'}"></option>
                                 </select>
+                                <div class="form-text">Mantén Ctrl para seleccionar o deseleccionar.</div>
                             </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Actualizar</button>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Riesgos Asociados</label>
+                                <select th:field="*{riesgos}" class="form-select" multiple size="4">
+                                    <option th:each="riesgo : ${riesgos}"
+                                            th:value="${riesgo.codRiesgo}"
+                                            th:text="${riesgo.descripcion}"></option>
+                                </select>
+                                <div class="form-text">Mantén Ctrl para seleccionar o deseleccionar.</div>
                             </div>
-                        </form>
-                        <div class="mt-3 text-center">
-                            <a th:href="@{/admin/minas}" class="btn btn-link text-secondary">Volver al listado</a>
                         </div>
-                    </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-warning px-4">
+                                <i class="bi bi-check-lg me-1"></i>Actualizar Mina
+                            </button>
+                            <a th:href="@{/admin/minas}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left me-1"></i>Cancelar
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
-        </div>
-    </main>
-    <footer th:replace="~{plantillas/principal :: footer}"></footer>
-</body>
 
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
 </html>

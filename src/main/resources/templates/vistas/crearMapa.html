@@ -1,46 +1,195 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="~{plantillas/principal :: head}"></head>
-
 <body>
-    <header th:replace="~{plantillas/principal :: header}"></header>
-    <main class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header text-center">
-                        <h4 class="text-primary">Crear Mapa</h4>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Panel</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/mapas}">Mapas</a></li>
+                    <li class="breadcrumb-item active">Crear Mapa</li>
+                </ol>
+            </nav>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-header sg-card-header d-flex align-items-center gap-2">
+                    <i class="bi bi-map-fill fs-5 text-success"></i>
+                    <h5 class="mb-0 fw-bold">Crear Nuevo Mapa</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" th:text="${mensajeExito}">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                    <div class="card-body">
-                        <form th:action="@{/admin/mapas/crear}" th:object="${mapa}" method="post">
-                            <div class="mb-3">
-                                <label class="form-label">Coordenadas</label>
-                                <input type="text" th:field="*{coordenadas}" class="form-control" required>
-                                <div th:if="${#fields.hasErrors('coordenadas')}" class="text-danger">
-                                    <p th:errors="*{coordenadas}"></p>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Descripción</label>
-                                <input type="text" th:field="*{descripcion}" class="form-control" required>
-                                <div th:if="${#fields.hasErrors('descripcion')}" class="text-danger">
-                                    <p th:errors="*{descripcion}"></p>
-                                </div>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                            </div>
-                        </form>
-                        <div class="mt-3 text-center">
-                            <a th:href="@{/admin/mapas}" class="btn btn-link text-secondary">Volver al listado</a>
+
+                    <form th:action="@{/admin/mapas/crear}" th:object="${mapa}" method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Título del Mapa</label>
+                            <input type="text" th:field="*{titulo}" class="form-control"
+                                   placeholder="Ej: Mapa zona norte sector A">
                         </div>
-                    </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Descripción <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{descripcion}" class="form-control" required
+                                   placeholder="Descripción breve del área">
+                            <div th:if="${#fields.hasErrors('descripcion')}" class="text-danger small mt-1">
+                                <span th:errors="*{descripcion}"></span>
+                            </div>
+                        </div>
+
+                        <!-- Selector de ubicación con OpenStreetMap + Leaflet -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>Ubicación Geográfica
+                            </label>
+                            <p class="text-muted small mb-2">
+                                Haz clic en el mapa para seleccionar la ubicación, o ingresa las coordenadas manualmente.
+                            </p>
+                            <div id="leafletMap" class="sg-map-container mb-3"></div>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <label class="form-label small">Latitud</label>
+                                    <input type="number" th:field="*{latitud}" id="latitud" class="form-control"
+                                           step="any" placeholder="Ej: 4.710900">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small">Longitud</label>
+                                    <input type="number" th:field="*{longitud}" id="longitud" class="form-control"
+                                           step="any" placeholder="Ej: -74.072100">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary btn-sm mt-2" onclick="usarMiUbicacion()">
+                                <i class="bi bi-crosshair me-1"></i>Usar mi ubicación actual
+                            </button>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Coordenadas (texto) <span class="text-danger">*</span></label>
+                            <input type="text" th:field="*{coordenadas}" id="coordenadas" class="form-control" required
+                                   placeholder="Ej: 4.710900, -74.072100">
+                            <div class="form-text">Se llena automáticamente al seleccionar en el mapa.</div>
+                            <div th:if="${#fields.hasErrors('coordenadas')}" class="text-danger small mt-1">
+                                <span th:errors="*{coordenadas}"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-success px-4">
+                                <i class="bi bi-check-lg me-1"></i>Guardar Mapa
+                            </button>
+                            <a th:href="@{/admin/mapas}" class="btn btn-outline-secondary px-4">
+                                <i class="bi bi-arrow-left me-1"></i>Cancelar
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-    </main>
-    <footer th:replace="~{plantillas/principal :: footer}"></footer>
-</body>
+    </div>
+</main>
 
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+
+<script th:inline="javascript">
+    const INIT_LAT = /*[[${mapa.latitud}]]*/ null;
+    const INIT_LNG = /*[[${mapa.longitud}]]*/ null;
+</script>
+<script>
+    const defaultCenter = [4.7109, -74.0721];
+    const initLat = (INIT_LAT && !isNaN(INIT_LAT)) ? parseFloat(INIT_LAT) : null;
+    const initLng = (INIT_LNG && !isNaN(INIT_LNG)) ? parseFloat(INIT_LNG) : null;
+
+    const map = L.map('leafletMap').setView(
+        (initLat && initLng) ? [initLat, initLng] : defaultCenter,
+        (initLat && initLng) ? 13 : 6
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19
+    }).addTo(map);
+
+    let marker = null;
+
+    if (initLat && initLng) {
+        marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
+        marker.on('dragend', function(e) {
+            const pos = e.target.getLatLng();
+            updateFields(pos.lat.toFixed(6), pos.lng.toFixed(6));
+        });
+    }
+
+    function updateFields(lat, lng) {
+        document.getElementById('latitud').value = lat;
+        document.getElementById('longitud').value = lng;
+        document.getElementById('coordenadas').value = lat + ', ' + lng;
+    }
+
+    map.on('click', function(e) {
+        const lat = e.latlng.lat.toFixed(6);
+        const lng = e.latlng.lng.toFixed(6);
+        updateFields(lat, lng);
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng, { draggable: true }).addTo(map);
+            marker.on('dragend', function(ev) {
+                const pos = ev.target.getLatLng();
+                updateFields(pos.lat.toFixed(6), pos.lng.toFixed(6));
+            });
+        }
+    });
+
+    // Sincronizar inputs manuales con el mapa
+    ['latitud', 'longitud'].forEach(function(id) {
+        document.getElementById(id).addEventListener('change', function() {
+            const lat = parseFloat(document.getElementById('latitud').value);
+            const lng = parseFloat(document.getElementById('longitud').value);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                const latlng = L.latLng(lat, lng);
+                updateFields(lat.toFixed(6), lng.toFixed(6));
+                if (marker) { marker.setLatLng(latlng); }
+                else {
+                    marker = L.marker(latlng, { draggable: true }).addTo(map);
+                    marker.on('dragend', function(ev) {
+                        const pos = ev.target.getLatLng();
+                        updateFields(pos.lat.toFixed(6), pos.lng.toFixed(6));
+                    });
+                }
+                map.setView(latlng, 13);
+            }
+        });
+    });
+
+    function usarMiUbicacion() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(pos) {
+                const lat = pos.coords.latitude.toFixed(6);
+                const lng = pos.coords.longitude.toFixed(6);
+                const latlng = L.latLng(parseFloat(lat), parseFloat(lng));
+                updateFields(lat, lng);
+                if (marker) { marker.setLatLng(latlng); }
+                else {
+                    marker = L.marker(latlng, { draggable: true }).addTo(map);
+                    marker.on('dragend', function(e) {
+                        const p = e.target.getLatLng();
+                        updateFields(p.lat.toFixed(6), p.lng.toFixed(6));
+                    });
+                }
+                map.setView(latlng, 14);
+            }, function() {
+                alert('No se pudo obtener la ubicación actual.');
+            });
+        } else {
+            alert('Tu navegador no soporta geolocalización.');
+        }
+    }
+</script>
+</body>
 </html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-gem text-warning me-2"></i>Reporte de Minas</h2>
+            <p class="text-muted mb-0">Total registradas: <strong th:text="${totalMinas}">0</strong> minas.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/informes}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Dashboard
+            </a>
+            <a th:href="@{/admin/minas/crear}" class="btn btn-warning btn-sm">
+                <i class="bi bi-plus me-1"></i>Nueva Mina
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="sg-table-header">
+                        <tr>
+                            <th class="ps-4">Código</th>
+                            <th>Nombre</th>
+                            <th>Departamento</th>
+                            <th class="text-center">Mapas</th>
+                            <th class="text-center">Riesgos</th>
+                            <th class="text-center">Personal</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${minas == null or minas.isEmpty()}">
+                            <td colspan="7" class="text-center py-4 text-muted">No hay minas registradas.</td>
+                        </tr>
+                        <tr th:each="mina : ${minas}">
+                            <td class="ps-4 fw-bold text-muted small" th:text="${mina.codMina}"></td>
+                            <td class="fw-semibold" th:text="${mina.nombre}"></td>
+                            <td th:text="${mina.departamento}"></td>
+                            <td class="text-center">
+                                <span class="badge bg-success rounded-pill"
+                                      th:text="${mina.mapas != null ? mina.mapas.size() : 0}"></span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-danger rounded-pill"
+                                      th:text="${mina.riesgos != null ? mina.riesgos.size() : 0}"></span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-primary rounded-pill"
+                                      th:text="${mina.usuarios != null ? mina.usuarios.size() : 0}"></span>
+                            </td>
+                            <td class="text-center">
+                                <a th:href="@{/admin/minas/editar/{id}(id=${mina.codMina})}"
+                                   class="btn btn-outline-warning btn-sm">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>

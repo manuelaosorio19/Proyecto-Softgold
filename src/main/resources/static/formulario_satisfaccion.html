@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback del Usuario - Sofgold</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      background: #fff;
+      max-width: 600px;
+      margin: 0 auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 25px 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #005b96;
+      margin-bottom: 25px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+      color: #333;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      resize: none;
+      height: 100px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      margin-top: 25px;
+      padding: 10px;
+      background-color: #005b96;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #004070;
+    }
+
+    .mensaje {
+      text-align: center;
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📋 Feedback del Usuario</h1>
+    <form id="feedbackForm">
+      <label for="nombre">Nombre del usuario:</label>
+      <input type="text" id="nombre" name="nombre" placeholder="Ej. andrea.rojas" required>
+
+      <label for="satisfaccion">Nivel de satisfacción (1–10):</label>
+      <select id="satisfaccion" name="satisfaccion" required>
+        <option value="">Selecciona una opción</option>
+        <script>
+          for (let i = 1; i <= 10; i++) {
+            document.write(`<option value="${i}">${i}</option>`);
+          }
+        </script>
+      </select>
+
+      <label for="comentario">Comentarios o sugerencias:</label>
+      <textarea id="comentario" name="comentario" placeholder="Escribe aquí tus comentarios..."></textarea>
+
+      <button type="submit" class="btn">Enviar Feedback</button>
+    </form>
+
+    <div class="mensaje" id="mensajeExito">✅ ¡Gracias por tu feedback!</div>
+  </div>
+
+  <script>
+    const form = document.getElementById("feedbackForm");
+    const mensaje = document.getElementById("mensajeExito");
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const nombre = document.getElementById("nombre").value;
+      const satisfaccion = document.getElementById("satisfaccion").value;
+      const comentario = document.getElementById("comentario").value;
+
+      // Simulación de registro en consola (como si fuera un log)
+      console.log("📊 Nuevo Feedback Recibido:");
+      console.log("Usuario:", nombre);
+      console.log("Satisfacción:", satisfaccion);
+      console.log("Comentario:", comentario);
+      console.log("-----------------------------");
+
+      mensaje.style.display = "block";
+      form.reset();
+
+      // Oculta el mensaje luego de unos segundos
+      setTimeout(() => mensaje.style.display = "none", 3000);
+    });
+  </script>
+
+</body>
+</html>

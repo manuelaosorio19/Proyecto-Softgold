@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte de Incidente - Sofgold</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      padding: 20px 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2e6da4;
+      border-bottom: 2px solid #2e6da4;
+      padding-bottom: 10px;
+    }
+
+    .info {
+      margin-bottom: 15px;
+      line-height: 1.6;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #333;
+      width: 150px;
+      display: inline-block;
+    }
+
+    .value {
+      color: #555;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9em;
+      color: #777;
+    }
+
+    .btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 25px;
+      background-color: #2e6da4;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    .btn:hover {
+      background-color: #204d74;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Reporte de Incidente - Sofgold</h1>
+
+    <div class="info"><span class="label">ID:</span> <span class="value">INC-001</span></div>
+    <div class="info"><span class="label">Fecha:</span> <span class="value">06/11/2025</span></div>
+    <div class="info"><span class="label">Usuario afectado:</span> <span class="value">manuela.osorio</span></div>
+    <div class="info"><span class="label">Descripción:</span> <span class="value">No carga el panel de eventos</span></div>
+    <div class="info"><span class="label">Categoría:</span> <span class="value">Error funcional</span></div>
+    <div class="info"><span class="label">Prioridad:</span> <span class="value">Alta</span></div>
+    <div class="info"><span class="label">Estado:</span> <span class="value">En análisis</span></div>
+    <div class="info"><span class="label">Responsable:</span> <span class="value">Equipo de desarrollo</span></div>
+    <div class="info"><span class="label">Solución aplicada:</span> <span class="value">Actualización del módulo de eventos</span></div>
+
+    <button class="btn" onclick="window.print()">Imprimir Reporte</button>
+
+    <div class="footer">Sistema de Reportes Sofgold - Mina Central © 2025</div>
+  </div>
+
+</body>
+</html>

@@ -1,73 +1,103 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="~{plantillas/principal :: head}"></head>
-
 <body>
-    <header th:replace="~{plantillas/principal :: header}"></header>
-    <main class="container mt-5">
-        <h3 class="text-primary">Listado de Minas</h3>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <a th:href="@{/admin/minas/crear}" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i> Nueva mina
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-gem text-warning me-2"></i>Gestión de Minas</h2>
+            <p class="text-muted mb-0">Administra las minas registradas en el sistema.</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <form th:action="@{/admin/minas/buscar}" method="get" class="d-flex gap-2">
+                <input type="search" name="departamento" class="form-control form-control-sm"
+                       placeholder="Buscar por departamento..." th:value="${param.departamento}"
+                       style="min-width: 200px;">
+                <button type="submit" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a th:if="${param.departamento != null and param.departamento != ''}"
+                   th:href="@{/admin/minas}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-x"></i>
+                </a>
+            </form>
+            <a th:href="@{/admin/minas/crear}" class="btn btn-warning rounded-pill px-4">
+                <i class="bi bi-plus-lg me-1"></i>Nueva Mina
             </a>
-            <div class="d-flex align-items-center">
-                <form class="d-flex" th:action="@{/admin/minas/buscar}" method="get">
-                    <input class="form-control me-2" type="search" name="departamento"
-                        placeholder="Buscar por departamento" aria-label="Buscar" th:value="${param.departamento}">
-                    <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
-                </form>
-                <div th:if="${param.departamento != null and param.departamento != ''}" class="ms-2">
-                    <a th:href="@{/admin/minas}" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-counterclockwise"></i> Ver todos
-                    </a>
-                </div>
+        </div>
+    </div>
+
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" th:text="${mensajeExito}">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="sg-table-header">
+                        <tr>
+                            <th class="ps-4">Código</th>
+                            <th>Nombre</th>
+                            <th>Departamento</th>
+                            <th class="text-center">Mapas</th>
+                            <th class="text-center">Riesgos</th>
+                            <th class="text-center">Personal</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${minas == null or minas.isEmpty()}">
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-gem fs-2 d-block mb-2 text-warning"></i>
+                                No hay minas registradas aún.
+                                <a th:href="@{/admin/minas/crear}" class="d-block mt-2">Registrar primera mina</a>
+                            </td>
+                        </tr>
+                        <tr th:each="mina : ${minas}">
+                            <td class="ps-4">
+                                <span class="badge bg-secondary rounded-pill" th:text="${mina.codMina}"></span>
+                            </td>
+                            <td class="fw-semibold" th:text="${mina.nombre}"></td>
+                            <td>
+                                <i class="bi bi-geo-alt text-muted me-1"></i>
+                                <span th:text="${mina.departamento}"></span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-success rounded-pill"
+                                      th:text="${mina.mapas != null ? mina.mapas.size() : 0}"></span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-danger rounded-pill"
+                                      th:text="${mina.riesgos != null ? mina.riesgos.size() : 0}"></span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-primary rounded-pill"
+                                      th:text="${mina.usuarios != null ? mina.usuarios.size() : 0}"></span>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a th:href="@{/admin/minas/editar/{id}(id=${mina.codMina})}"
+                                       class="btn btn-outline-warning btn-sm" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a th:href="@{/admin/minas/eliminar/{id}(id=${mina.codMina})}"
+                                       class="btn btn-outline-danger btn-sm" title="Eliminar"
+                                       onclick="return confirm('¿Eliminar esta mina y todas sus asociaciones?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <table class="table table-hover mt-3">
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Mina</th>
-                    <th>Departamento</th>
-                    <th>Coordenadas de Mapa</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="mina : ${minas}">
-                    <td th:text="${mina.codMina}"></td>
-                    <td th:text="${mina.nombre}"></td>
-                    <td th:text="${mina.departamento}"></td>
-                    <td>
-                        <span th:each="mapa : ${mina.mapas}">
-                            <span th:text="${mapa.coordenadas}"></span><br>
-                        </span>
-                    </td>
-                    <td>
-                        <span th:each="mapa : ${mina.mapas}">
-                            <span th:text="${mapa.descripcion}"></span><br>
-                        </span>
-                    </td>
-                    <td>
-                        <a th:href="@{/admin/minas/editar/{id}(id=${mina.codMina})}" class="text-warning me-2"
-                            title="Editar">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <a th:href="@{/admin/minas/eliminar/{id}(id=${mina.codMina})}" class="text-danger"
-                            title="Eliminar" onclick="return confirm('¿Seguro que deseas eliminar esta mina?');">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr th:if="${minas == null or minas.size() == 0}">
-                    <td colspan="6" class="text-center">No hay minas registradas.</td>
-                </tr>
-            </tbody>
-        </table>
-    </main>
-    <footer th:replace="~{plantillas/principal :: footer}"></footer>
-</body>
+    </div>
+</main>
 
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
 </html>

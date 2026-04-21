@@ -1,61 +1,102 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="~{plantillas/principal :: head}"></head>
-
 <body>
-    <header th:replace="~{plantillas/principal :: header}"></header>
-    <main class="container mt-5">
-        <h3 class="text-primary">Listado de Mapas</h3>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <a th:href="@{/admin/mapas/crear}" class="btn btn-success">
-                <i class="bi bi-plus-circle"></i> Nuevo mapa
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-map text-success me-2"></i>Gestión de Mapas</h2>
+            <p class="text-muted mb-0">Administra los mapas georreferenciados del sistema.</p>
+        </div>
+        <div class="d-flex gap-2 align-items-center flex-wrap">
+            <form th:action="@{/admin/mapas/buscar}" method="get" class="d-flex gap-2">
+                <input type="search" name="descripcion" class="form-control form-control-sm"
+                       placeholder="Buscar por descripción..." th:value="${param.descripcion}"
+                       style="min-width: 200px;">
+                <button type="submit" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a th:if="${param.descripcion != null and param.descripcion != ''}"
+                   th:href="@{/admin/mapas}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-x"></i>
+                </a>
+            </form>
+            <a th:href="@{/admin/mapas/crear}" class="btn btn-success rounded-pill px-4">
+                <i class="bi bi-plus-lg me-1"></i>Nuevo Mapa
             </a>
-            <div class="d-flex align-items-center">
-                <form class="d-flex" th:action="@{/admin/mapas/buscar}" method="get">
-                    <input class="form-control me-2" type="search" name="descripcion"
-                        placeholder="Buscar por descripción" aria-label="Buscar" th:value="${param.descripcion}">
-                    <button class="btn btn-outline-success" type="submit"><i class="bi bi-search"></i></button>
-                </form>
-                <div th:if="${param.descripcion != null and param.descripcion != ''}" class="ms-2">
-                    <a th:href="@{/admin/mapas}" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-arrow-counterclockwise"></i> Ver todos
-                    </a>
-                </div>
+        </div>
+    </div>
+
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" th:text="${mensajeExito}">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="sg-table-header">
+                        <tr>
+                            <th class="ps-4">Código</th>
+                            <th>Descripción</th>
+                            <th>Coordenadas</th>
+                            <th class="text-center">Lat / Lng</th>
+                            <th class="text-center">Minas</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${mapas == null or mapas.isEmpty()}">
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="bi bi-map fs-2 d-block mb-2 text-success"></i>
+                                No hay mapas registrados aún.
+                                <a th:href="@{/admin/mapas/crear}" class="d-block mt-2">Crear primer mapa</a>
+                            </td>
+                        </tr>
+                        <tr th:each="mapa : ${mapas}">
+                            <td class="ps-4">
+                                <span class="badge bg-secondary rounded-pill" th:text="${mapa.codigoMapa}"></span>
+                            </td>
+                            <td>
+                                <div class="fw-semibold" th:text="${mapa.descripcion}"></div>
+                                <small class="text-muted" th:if="${mapa.titulo != null}" th:text="${mapa.titulo}"></small>
+                            </td>
+                            <td class="small text-muted font-monospace" th:text="${mapa.coordenadas}"></td>
+                            <td class="text-center small">
+                                <span th:if="${mapa.latitud != null}" class="text-success fw-semibold">
+                                    <i class="bi bi-geo-alt me-1"></i>
+                                    <span th:text="${#numbers.formatDecimal(mapa.latitud,1,4)}"></span>,
+                                    <span th:text="${#numbers.formatDecimal(mapa.longitud,1,4)}"></span>
+                                </span>
+                                <span th:unless="${mapa.latitud != null}" class="text-muted">Sin GPS</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-warning text-dark rounded-pill"
+                                      th:text="${mapa.minas != null ? mapa.minas.size() : 0}"></span>
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a th:href="@{/admin/mapas/editar/{id}(id=${mapa.codigoMapa})}"
+                                       class="btn btn-outline-warning btn-sm" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a th:href="@{/admin/mapas/eliminar/{id}(id=${mapa.codigoMapa})}"
+                                       class="btn btn-outline-danger btn-sm" title="Eliminar"
+                                       onclick="return confirm('¿Eliminar este mapa?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <table class="table table-hover mt-3">
-            <thead>
-                <tr>
-                    <th>Código</th>
-                    <th>Coordenadas</th>
-                    <th>Descripción</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="mapa : ${mapas}">
-                    <td th:text="${mapa.codigoMapa}"></td>
-                    <td th:text="${mapa.coordenadas}"></td>
-                    <td th:text="${mapa.descripcion}"></td>
-                    <td>
-                        <a th:href="@{/admin/mapas/editar/{id}(id=${mapa.codigoMapa})}" class="text-warning me-2"
-                            title="Editar">
-                            <i class="bi bi-pencil-square"></i>
-                        </a>
-                        <a th:href="@{/admin/mapas/eliminar/{id}(id=${mapa.codigoMapa})}" class="text-danger"
-                            onclick="return confirm('¿Seguro que deseas eliminar este mapa?');" title="Eliminar">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr th:if="${mapas == null or mapas.size() == 0}">
-                    <td colspan="4" class="text-center">No hay mapas registrados.</td>
-                </tr>
-            </tbody>
-        </table>
-    </main>
-    <footer th:replace="~{plantillas/principal :: footer}"></footer>
-</body>
+    </div>
+</main>
 
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
 </html>

@@ -27,17 +27,24 @@ public class SecurityConfig {
                 return config.getAuthenticationManager();
         }
 
+        // ...existing code...
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.authorizeHttpRequests(auth -> auth
                                 .requestMatchers(
                                                 "/login", "/registro", "/registro/**", "/recuperar",
-                                                "/recuperar/**",
-                                                "/recuperar-password", "/enviar-token",
+                                                "/recuperar/**", "/recuperar-password", "/enviar-token",
                                                 "/cambiarPassword", "/cambiarPassword/**",
                                                 "/cuenta-bloqueada",
-                                                "/css/**", "/js/**", "/images/**", "/redirectByRole")
+                                                "/css/**", "/js/**", "/images/**", "/redirectByRole",
+                                                "/soporte/reporte",
+                                                "/foro", "/foro/crear", "/foro/{id:[\\d]+}", "/foro/{id:[\\d]+}/comentar",
+                                                "/reporte_incidente.html", "/formulario_satisfaccion.html",
+                                                "/service_level.html", "/control_cambios.html", "/mejor_continua.html"
+                                )
                                 .permitAll()
+                                .requestMatchers("/foro/eliminar/**").hasRole("ADMINISTRADOR")
+                                .requestMatchers("/soporte/tickets/**").hasRole("ADMINISTRADOR")
                                 .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
                                 .requestMatchers("/minero/**").hasRole("MINERO")
                                 .requestMatchers("/empleado/**").hasRole("EMPLEADO")
@@ -57,4 +64,5 @@ public class SecurityConfig {
 
                 return http.build();
         }
+        // ...existing code...
 }

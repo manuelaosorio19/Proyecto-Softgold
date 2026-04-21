@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
+
+            <div class="card border-0 shadow-sm">
+                <div class="card-header sg-card-header d-flex align-items-center gap-3 py-3">
+                    <div style="width:52px;height:52px;border-radius:50%;background:rgba(0,200,83,0.12);display:flex;align-items:center;justify-content:center;">
+                        <i class="bi bi-person-fill fs-3 text-success"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold" th:text="${usuario != null} ? ${usuario.nombre1 + ' ' + usuario.apellido1} : ${currentUsername}">Mi Perfil</h5>
+                        <small class="text-muted" th:text="${usuario != null} ? ${usuario.email} : ''"></small>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+
+                    <div th:if="${usuario != null}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Primer Nombre</label>
+                                <p class="fw-semibold mb-0" th:text="${usuario.nombre1}">—</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Segundo Nombre</label>
+                                <p class="fw-semibold mb-0" th:text="${usuario.nombre2 != null and !#strings.isEmpty(usuario.nombre2)} ? ${usuario.nombre2} : '—'">—</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Primer Apellido</label>
+                                <p class="fw-semibold mb-0" th:text="${usuario.apellido1}">—</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Segundo Apellido</label>
+                                <p class="fw-semibold mb-0" th:text="${usuario.apellido2 != null and !#strings.isEmpty(usuario.apellido2)} ? ${usuario.apellido2} : '—'">—</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Tipo de Documento</label>
+                                <p class="fw-semibold mb-0" th:text="${usuario.tipoDocumento}">—</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Cédula</label>
+                                <p class="fw-semibold mb-0" th:text="${usuario.cedula}">—</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Correo Electrónico</label>
+                                <p class="fw-semibold mb-0" th:text="${usuario.email}">—</p>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Tipo de Usuario</label>
+                                <p class="mb-0">
+                                    <span class="badge bg-success rounded-pill" th:text="${usuario.tipoUsuario}">—</span>
+                                </p>
+                            </div>
+                            <div class="col-md-6" th:if="${usuario.telefono != null and !#strings.isEmpty(usuario.telefono)}">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Teléfono</label>
+                                <p class="fw-semibold mb-0" th:text="${usuario.telefono}">—</p>
+                            </div>
+                            <div class="col-md-6" th:if="${usuario.mina != null}">
+                                <label class="form-label text-muted small fw-semibold text-uppercase" style="letter-spacing:.05em;">Mina Asignada</label>
+                                <p class="fw-semibold mb-0" th:text="${usuario.mina.nombre}">—</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${usuario == null}" class="text-center text-muted py-3">
+                        <i class="bi bi-person-x fs-2 mb-2 d-block"></i>
+                        No se encontró información del perfil.
+                    </div>
+
+                </div>
+                <div class="card-footer sg-card-header d-flex justify-content-end gap-2">
+                    <a th:href="@{/cuenta/cambiarPassword}" class="btn btn-outline-warning btn-sm">
+                        <i class="bi bi-key me-1"></i>Cambiar Contraseña
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>

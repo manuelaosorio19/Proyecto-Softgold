@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-binoculars-fill text-warning me-2"></i>Zonas de Exploración</h2>
+            <p class="text-muted mb-0">Gestiona las zonas de exploración minera registradas en el sistema.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/admin/exploracion/mapa}" class="btn btn-outline-success rounded-pill px-3">
+                <i class="bi bi-map-fill me-1"></i>Ver Mapa
+            </a>
+            <a th:href="@{/admin/exploracion/crear}" class="btn btn-warning rounded-pill px-3">
+                <i class="bi bi-plus-lg me-1"></i>Nueva Zona
+            </a>
+        </div>
+    </div>
+
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" th:text="${mensajeExito}">
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <!-- Filtros rápidos -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body py-2">
+            <form th:action="@{/admin/exploracion/buscar}" method="get" class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Buscar por nombre...">
+                </div>
+                <div class="col-md-3">
+                    <select name="estado" class="form-select form-select-sm">
+                        <option value="">Todos los estados</option>
+                        <option value="EN_EXPLORACION">En Exploración</option>
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="CERRADA">Cerrada</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="tipo" class="form-select form-select-sm">
+                        <option value="">Todos los tipos</option>
+                        <option value="ACTIVA">Activa</option>
+                        <option value="POTENCIAL">Potencial</option>
+                        <option value="INACTIVA">Inactiva</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary btn-sm w-100">
+                        <i class="bi bi-search me-1"></i>Filtrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabla de zonas -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="sg-table-header">
+                        <tr>
+                            <th class="ps-4">#</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Mina</th>
+                            <th>Coordenadas</th>
+                            <th>Fecha</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${zonas == null or zonas.isEmpty()}">
+                            <td colspan="8" class="text-center py-5 text-muted">
+                                <i class="bi bi-geo fs-2 d-block mb-2"></i>
+                                No hay zonas registradas aún.
+                                <a th:href="@{/admin/exploracion/crear}" class="d-block mt-2">Crear primera zona</a>
+                            </td>
+                        </tr>
+                        <tr th:each="zona : ${zonas}">
+                            <td class="ps-4 fw-bold text-muted small" th:text="${zona.id}"></td>
+                            <td class="fw-semibold" th:text="${zona.nombre}"></td>
+                            <td>
+                                <span class="badge rounded-pill"
+                                      th:classappend="${zona.tipo == 'ACTIVA'} ? 'bg-success' : (${zona.tipo == 'POTENCIAL'} ? 'bg-warning text-dark' : 'bg-secondary')"
+                                      th:text="${zona.tipo}"></span>
+                            </td>
+                            <td>
+                                <span class="badge rounded-pill"
+                                      th:classappend="${zona.estado == 'EN_EXPLORACION'} ? 'bg-primary' : (${zona.estado == 'PENDIENTE'} ? 'bg-info text-dark' : 'bg-danger')"
+                                      th:text="${zona.estado}"></span>
+                            </td>
+                            <td>
+                                <span th:text="${zona.mina != null ? zona.mina.nombre : '—'}" class="small text-muted"></span>
+                            </td>
+                            <td class="small text-muted">
+                                <span th:if="${zona.latitud != null}"
+                                      th:text="${#numbers.formatDecimal(zona.latitud,1,4)} + ', ' + ${#numbers.formatDecimal(zona.longitud,1,4)}"></span>
+                                <span th:unless="${zona.latitud != null}">—</span>
+                            </td>
+                            <td class="small" th:text="${#temporals.format(zona.fechaRegistro, 'dd/MM/yyyy')}"></td>
+                            <td class="text-center">
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a th:href="@{/admin/exploracion/editar/{id}(id=${zona.id})}"
+                                       class="btn btn-outline-warning btn-sm" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a th:href="@{/admin/exploracion/eliminar/{id}(id=${zona.id})}"
+                                       class="btn btn-outline-danger btn-sm" title="Eliminar"
+                                       onclick="return confirm('¿Eliminar esta zona?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>

@@ -1,106 +1,25 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="~{plantillas/principal :: head}"></head>
-
 <body>
-    <header th:replace="~{plantillas/principal :: header}"></header>
+<header th:replace="~{plantillas/principal :: header}"></header>
 
-    <main class="container mt-5">
-        <!-- Perfil de administrador -->
-        <div class="row justify-content-center mb-4">
-            <div class="col-lg-5 col-md-7">
-                <div class="card shadow-sm border-0 position-relative">
-                    <!-- Botones configuración y cerrar sesión -->
-                    <div class="position-absolute top-0 end-0 m-2 d-flex gap-2" style="z-index:2;">
-                        <a th:href="@{/admin/perfil}" class="btn btn-outline-primary btn-sm px-2 py-1">
-                            <i class="bi bi-gear"></i>
-                        </a>
-                        <a th:href="@{/logout}" class="btn btn-outline-danger btn-sm px-2 py-1">
-                            <i class="bi bi-box-arrow-right"></i>
-                        </a>
-                    </div>
-                    <div class="card-body d-flex align-items-center py-2">
-                        <div class="me-2">
-                            <i class="bi bi-person-circle text-primary" style="font-size: 2.2rem;"></i>
-                        </div>
-                        <div>
-                            <h6 class="mb-0 fw-bold" style="font-size: 1.1rem;">
-                                Bienvenido, <span th:text="${usuario.nombre1}"></span>
-                            </h6>
-                            <span class="text-muted small">
-                                <i class="bi bi-envelope"></i>
-                                <span th:text="${usuario.email}">correo@ejemplo.com</span>
-                            </span>
-                            <div>
-                                <span class="badge bg-success" style="font-size: 0.8rem;">
-                                    Rol: <span th:text="${usuario.roles[0].nombre}"></span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<main class="d-flex align-items-center justify-content-center" style="min-height: 70vh;">
+    <div class="text-center px-3">
+        <div class="sg-home-logo mb-4">
+            <i class="bi bi-gem" style="font-size: 5rem; color: var(--sg-warning);"></i>
         </div>
+        <h1 class="fw-bold mb-2" style="font-size: 2.8rem; letter-spacing: 4px; color: var(--sg-primary);">SOFTGOLD</h1>
+        <p class="text-muted fs-5 mb-1">Sistema de Gestión Minera</p>
+        <p class="text-muted small mb-4">
+            Bienvenido, <strong th:text="${usuario != null} ? ${usuario.nombre1} : ${currentUsername}">Administrador</strong>
+        </p>
+        <span class="badge bg-success px-4 py-2 rounded-pill fs-6">
+            <i class="bi bi-shield-check me-1"></i>Panel de Administración
+        </span>
+    </div>
+</main>
 
-        <!-- Panel de administración -->
-        <div class="text-center mb-5">
-            <h2 class="fw-bold text-success">Panel de Administración</h2>
-            <p class="lead">Gestiona usuarios, minas y mapas del sistema.</p>
-        </div>
-
-        <!-- Tarjetas de gestión -->
-        <div class="row g-4 justify-content-center">
-            <!-- Mineros -->
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <i class="bi bi-person-lines-fill fs-1 text-dark"></i>
-                        <h5 class="card-title mt-2">Mineros</h5>
-                        <p class="card-text">Administra los usuarios con rol de minero.</p>
-                        <a th:href="@{/admin/usuarios/mineros}" class="btn btn-outline-dark btn-sm">Gestionar
-                            mineros</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Empleados -->
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <i class="bi bi-briefcase-fill fs-1 text-dark"></i>
-                        <h5 class="card-title mt-2">Empleados</h5>
-                        <p class="card-text">Administra los usuarios con rol de empleado.</p>
-                        <a th:href="@{/admin/usuarios/empleados}" class="btn btn-outline-dark btn-sm">Gestionar
-                            empleados</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Minas -->
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <i class="bi bi-gem fs-1 text-warning"></i>
-                        <h5 class="card-title mt-2">Minas</h5>
-                        <p class="card-text">Administra las minas registradas en el sistema.</p>
-                        <a th:href="@{/admin/minas}" class="btn btn-outline-warning btn-sm">Gestionar minas</a>
-                    </div>
-                </div>
-            </div>
-            <!-- Mapas -->
-            <div class="col-12 col-md-6 col-lg-3">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <i class="bi bi-map fs-1 text-success"></i>
-                        <h5 class="card-title mt-2">Mapas</h5>
-                        <p class="card-text">Administra los mapas asociados a las minas.</p>
-                        <a th:href="@{/admin/mapas}" class="btn btn-outline-success btn-sm">Gestionar mapas</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <footer th:replace="~{plantillas/principal :: footer}"></footer>
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
 </body>
-
 </html>

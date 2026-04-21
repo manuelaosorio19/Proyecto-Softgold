@@ -39,6 +39,11 @@ public class Mina {
     @JoinTable(name = "mina_mapa", joinColumns = @JoinColumn(name = "Codigo_Mina"), inverseJoinColumns = @JoinColumn(name = "Codigo_Mapa"))
     private List<Mapa> mapas;
 
+    // Relación N:M con Riesgo
+    @ManyToMany
+    @JoinTable(name = "mina_riesgo", joinColumns = @JoinColumn(name = "Codigo_Mina"), inverseJoinColumns = @JoinColumn(name = "cod_riesgo"))
+    private List<Riesgo> riesgos;
+
     public Long getCodMina() {
         return codMina;
     }
@@ -79,6 +84,14 @@ public class Mina {
         this.mapas = mapas;
     }
 
+    public List<Riesgo> getRiesgos() {
+        return riesgos;
+    }
+
+    public void setRiesgos(List<Riesgo> riesgos) {
+        this.riesgos = riesgos;
+    }
+
     public Mina() {
     }
 
@@ -110,4 +123,5 @@ public class Mina {
     public int hashCode() {
         return java.util.Objects.hash(codMina);
     }
+
 }

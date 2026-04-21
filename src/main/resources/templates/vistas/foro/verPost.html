@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/foro}">Foro</a></li>
+                    <li class="breadcrumb-item active" th:text="${post.titulo}"></li>
+                </ol>
+            </nav>
+
+            <!-- Mensajes flash -->
+            <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" th:text="${mensajeExito}">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <div th:if="${errorComentario}" class="alert alert-danger alert-dismissible fade show" th:text="${errorComentario}">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Post principal -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start gap-3 mb-3 flex-wrap">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                                <span class="badge bg-primary rounded-pill" th:text="${post.categoria}">GENERAL</span>
+                                <small class="text-muted">
+                                    <i class="bi bi-clock me-1"></i>
+                                    <span th:text="${#temporals.format(post.fechaCreacion, 'dd/MM/yyyy HH:mm')}"></span>
+                                </small>
+                            </div>
+                            <h3 class="fw-bold" th:text="${post.titulo}"></h3>
+                            <small class="text-muted">
+                                <i class="bi bi-person-circle me-1"></i>
+                                <span th:text="${post.autorNombre != null ? post.autorNombre : 'Anónimo'}"></span>
+                            </small>
+                        </div>
+                        <a th:if="${isAdmin}" th:href="@{/foro/eliminar/{id}(id=${post.id})}"
+                           class="btn btn-outline-danger btn-sm"
+                           onclick="return confirm('¿Eliminar este post?')">
+                            <i class="bi bi-trash me-1"></i>Eliminar
+                        </a>
+                    </div>
+                    <hr>
+                    <div class="sg-post-content" th:text="${post.contenido}" style="white-space: pre-wrap;"></div>
+                </div>
+            </div>
+
+            <!-- Comentarios -->
+            <div class="mb-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-chat-left-text me-2 text-primary"></i>
+                    Comentarios
+                    <span class="badge bg-secondary ms-1"
+                          th:text="${post.comentarios != null ? post.comentarios.size() : 0}"></span>
+                </h5>
+
+                <div th:if="${post.comentarios != null and !post.comentarios.isEmpty()}">
+                    <div th:each="com : ${post.comentarios}" class="card border-0 bg-light mb-2">
+                        <div class="card-body py-2 px-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <strong class="small">
+                                    <i class="bi bi-person me-1"></i>
+                                    <span th:text="${com.autorNombre != null ? com.autorNombre : 'Anónimo'}"></span>
+                                </strong>
+                                <small class="text-muted"
+                                       th:text="${#temporals.format(com.fechaCreacion, 'dd/MM HH:mm')}"></small>
+                            </div>
+                            <p class="mb-0 small" th:text="${com.contenido}"></p>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${post.comentarios == null or post.comentarios.isEmpty()}"
+                     class="text-muted small py-2 px-1">
+                    Aún no hay comentarios. ¡Sé el primero!
+                </div>
+            </div>
+
+            <!-- Formulario de comentario -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header sg-card-header">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-reply me-2"></i>Agregar Comentario</h6>
+                </div>
+                <div class="card-body p-3">
+                    <form th:action="@{/foro/{id}/comentar(id=${post.id})}" th:object="${nuevoComentario}" method="post">
+                        <div class="mb-3">
+                            <textarea th:field="*{contenido}" class="form-control" rows="3" required
+                                      maxlength="1000" placeholder="Escribe tu comentario..."></textarea>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary btn-sm px-4">
+                                <i class="bi bi-send me-1"></i>Comentar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <a th:href="@{/foro}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>Volver al foro
+                </a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>

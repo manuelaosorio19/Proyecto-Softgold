@@ -24,6 +24,15 @@ public class Mapa {
     @Column(nullable = false)
     private String descripcion;
 
+    @Column(nullable = true)
+    private String titulo;
+
+    @Column(nullable = true)
+    private Double latitud;
+
+    @Column(nullable = true)
+    private Double longitud;
+
     // Relación N:M con Mina
     @ManyToMany(mappedBy = "mapas")
     private List<Mina> minas;
@@ -59,6 +68,15 @@ public class Mapa {
     public void setMinas(List<Mina> minas) {
         this.minas = minas;
     }
+
+    public String getTitulo() { return titulo; }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
+
+    public Double getLatitud() { return latitud; }
+    public void setLatitud(Double latitud) { this.latitud = latitud; }
+
+    public Double getLongitud() { return longitud; }
+    public void setLongitud(Double longitud) { this.longitud = longitud; }
 
     public Mapa() {
     }

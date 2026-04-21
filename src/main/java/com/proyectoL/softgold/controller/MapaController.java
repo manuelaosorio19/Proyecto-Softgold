@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.proyectoL.softgold.model.Mapa;
 import com.proyectoL.softgold.repository.MapaDAO;
@@ -35,11 +36,14 @@ public class MapaController {
     }
 
     @PostMapping("/crear")
-    public String crearMapa(@Valid @ModelAttribute("mapa") Mapa mapa, BindingResult result, Model model) {
+    public String crearMapa(@Valid @ModelAttribute("mapa") Mapa mapa, RedirectAttributes redirectAttrs,
+            BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "vistas/crearMapa";
         }
         mapaDAO.save(mapa);
+        redirectAttrs.addFlashAttribute("mensajeExito", "Mapa creado exitosamente.");
+
         return "redirect:/admin/mapas";
     }
 
@@ -54,13 +58,16 @@ public class MapaController {
     }
 
     @PostMapping("/editar/{id}")
-    public String editarMapa(@PathVariable Long id, @Valid @ModelAttribute("mapa") Mapa mapa, BindingResult result,
+    public String editarMapa(@PathVariable Long id, @Valid @ModelAttribute("mapa") Mapa mapa,
+            RedirectAttributes redirectAttrs, BindingResult result,
             Model model) {
         if (result.hasErrors()) {
             return "vistas/editarMapa";
         }
         mapa.setCodigoMapa(id); // Asegura que el ID no se pierda
         mapaDAO.save(mapa);
+        redirectAttrs.addFlashAttribute("mensajeExito", "Mapa actualizado exitosamente.");
+
         return "redirect:/admin/mapas";
     }
 

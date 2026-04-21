@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1"><i class="bi bi-funnel-fill text-info me-2"></i>Búsqueda Avanzada y Filtros</h2>
+        <p class="text-muted mb-0">Filtra y busca cualquier entidad del sistema SoftGold.</p>
+    </div>
+
+    <!-- Panel de filtros -->
+    <div class="row g-4">
+        <!-- Sidebar de filtros -->
+        <div class="col-lg-3">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 80px;">
+                <div class="card-header sg-card-header">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-sliders me-2"></i>Filtros</h6>
+                </div>
+                <div class="card-body p-3">
+                    <form th:action="@{/admin/filtros}" method="get" id="filtroForm">
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Entidad</label>
+                            <select name="entidad" class="form-select form-select-sm"
+                                    onchange="this.form.submit()" th:value="${entidad}">
+                                <option value="">Seleccionar entidad...</option>
+                                <option value="minas" th:selected="${entidad == 'minas'}">Minas</option>
+                                <option value="mapas" th:selected="${entidad == 'mapas'}">Mapas</option>
+                                <option value="usuarios" th:selected="${entidad == 'usuarios'}">Usuarios</option>
+                                <option value="riesgos" th:selected="${entidad == 'riesgos'}">Riesgos</option>
+                                <option value="zonas" th:selected="${entidad == 'zonas'}">Zonas Exploración</option>
+                            </select>
+                        </div>
+
+                        <!-- Filtros dinámicos según entidad -->
+                        <div th:if="${entidad == 'minas'}" class="mb-3">
+                            <label class="form-label fw-semibold small">Nombre de la mina</label>
+                            <input type="text" name="q" class="form-control form-control-sm"
+                                   placeholder="Nombre exacto" th:value="${q}">
+                            <label class="form-label fw-semibold small mt-2">Departamento</label>
+                            <input type="text" name="departamento" class="form-control form-control-sm"
+                                   placeholder="Ej: Antioquia">
+                        </div>
+
+                        <div th:if="${entidad == 'mapas'}" class="mb-3">
+                            <label class="form-label fw-semibold small">Descripción</label>
+                            <input type="text" name="q" class="form-control form-control-sm"
+                                   placeholder="Buscar por descripción" th:value="${q}">
+                        </div>
+
+                        <div th:if="${entidad == 'usuarios'}" class="mb-3">
+                            <label class="form-label fw-semibold small">Tipo de Usuario</label>
+                            <select name="tipoUsuario" class="form-select form-select-sm">
+                                <option value="">Todos</option>
+                                <option value="MINERO">Minero</option>
+                                <option value="EMPLEADO">Empleado</option>
+                                <option value="USUARIO">Usuario</option>
+                            </select>
+                        </div>
+
+                        <div th:if="${entidad == 'zonas'}" class="mb-3">
+                            <label class="form-label fw-semibold small">Estado</label>
+                            <select name="estadoZona" class="form-select form-select-sm">
+                                <option value="">Todos</option>
+                                <option value="EN_EXPLORACION">En Exploración</option>
+                                <option value="PENDIENTE">Pendiente</option>
+                                <option value="CERRADA">Cerrada</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-info btn-sm w-100 text-white">
+                            <i class="bi bi-search me-1"></i>Aplicar Filtros
+                        </button>
+                        <a th:href="@{/admin/filtros}" class="btn btn-outline-secondary btn-sm w-100 mt-2">
+                            <i class="bi bi-x-circle me-1"></i>Limpiar
+                        </a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Accesos rápidos -->
+            <div class="card border-0 shadow-sm mt-3">
+                <div class="card-header sg-card-header">
+                    <h6 class="mb-0 fw-bold small"><i class="bi bi-lightning me-1"></i>Accesos Rápidos</h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a th:href="@{/admin/filtros(entidad=minas)}" class="list-group-item list-group-item-action small py-2">
+                        <i class="bi bi-gem text-warning me-2"></i>Todas las minas
+                    </a>
+                    <a th:href="@{/admin/filtros(entidad=mapas)}" class="list-group-item list-group-item-action small py-2">
+                        <i class="bi bi-map text-success me-2"></i>Todos los mapas
+                    </a>
+                    <a th:href="@{/admin/filtros(entidad=usuarios,tipoUsuario=MINERO)}" class="list-group-item list-group-item-action small py-2">
+                        <i class="bi bi-person-lines-fill text-primary me-2"></i>Solo mineros
+                    </a>
+                    <a th:href="@{/admin/filtros(entidad=zonas,estadoZona=EN_EXPLORACION)}" class="list-group-item list-group-item-action small py-2">
+                        <i class="bi bi-geo-alt text-warning me-2"></i>Zonas activas
+                    </a>
+                    <a th:href="@{/admin/filtros(entidad=riesgos)}" class="list-group-item list-group-item-action small py-2">
+                        <i class="bi bi-exclamation-triangle text-danger me-2"></i>Todos los riesgos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <div class="col-lg-9">
+            <!-- Sin selección -->
+            <div th:if="${entidad == null or entidad == ''}" class="text-center py-5">
+                <i class="bi bi-funnel fs-1 text-muted d-block mb-3"></i>
+                <h5 class="text-muted">Selecciona una entidad para filtrar</h5>
+                <p class="text-muted small">Usa el panel de la izquierda para elegir qué datos filtrar.</p>
+                <div class="d-flex gap-2 justify-content-center flex-wrap mt-3">
+                    <a th:href="@{/admin/filtros(entidad=minas)}" class="btn btn-outline-warning btn-sm">
+                        <i class="bi bi-gem me-1"></i>Ver Minas
+                    </a>
+                    <a th:href="@{/admin/filtros(entidad=mapas)}" class="btn btn-outline-success btn-sm">
+                        <i class="bi bi-map me-1"></i>Ver Mapas
+                    </a>
+                    <a th:href="@{/admin/filtros(entidad=usuarios)}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-people me-1"></i>Ver Usuarios
+                    </a>
+                </div>
+            </div>
+
+            <!-- Con resultados -->
+            <div th:unless="${entidad == null or entidad == ''}">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold mb-0 text-capitalize">
+                        Resultados: <span th:text="${entidad}"></span>
+                    </h5>
+                    <span class="badge bg-secondary rounded-pill"
+                          th:text="${resultados != null ? resultados.size() + ' registros' : '0 registros'}"></span>
+                </div>
+
+                <div th:if="${resultados == null or resultados.isEmpty()}"
+                     class="text-center py-5 bg-light rounded">
+                    <i class="bi bi-search fs-2 text-muted d-block mb-2"></i>
+                    <p class="text-muted">No se encontraron resultados con los filtros aplicados.</p>
+                </div>
+
+                <div th:unless="${resultados == null or resultados.isEmpty()}">
+                    <!-- Minas -->
+                    <div th:if="${entidad == 'minas'}" class="card border-0 shadow-sm">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="sg-table-header">
+                                    <tr><th class="ps-4">Nombre</th><th>Departamento</th><th>Mapas</th><th>Acciones</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${resultados}">
+                                        <td class="ps-4 fw-semibold" th:text="${item.nombre}"></td>
+                                        <td th:text="${item.departamento}"></td>
+                                        <td><span class="badge bg-success" th:text="${item.mapas != null ? item.mapas.size() : 0}"></span></td>
+                                        <td><a th:href="@{/admin/minas/editar/{id}(id=${item.codMina})}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Mapas -->
+                    <div th:if="${entidad == 'mapas'}" class="card border-0 shadow-sm">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="sg-table-header">
+                                    <tr><th class="ps-4">Descripción</th><th>Coordenadas</th><th>Lat / Lng</th><th>Acciones</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${resultados}">
+                                        <td class="ps-4 fw-semibold" th:text="${item.descripcion}"></td>
+                                        <td class="small text-muted" th:text="${item.coordenadas}"></td>
+                                        <td class="small">
+                                            <span th:if="${item.latitud != null}" th:text="${item.latitud + ', ' + item.longitud}"></span>
+                                            <span th:unless="${item.latitud != null}" class="text-muted">Sin GPS</span>
+                                        </td>
+                                        <td><a th:href="@{/admin/mapas/editar/{id}(id=${item.codigoMapa})}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Usuarios -->
+                    <div th:if="${entidad == 'usuarios'}" class="card border-0 shadow-sm">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="sg-table-header">
+                                    <tr><th class="ps-4">Nombre</th><th>Email</th><th>Tipo</th><th>Mina</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${resultados}">
+                                        <td class="ps-4 fw-semibold" th:text="${item.nombre1 + ' ' + item.apellido1}"></td>
+                                        <td class="small" th:text="${item.email}"></td>
+                                        <td><span class="badge bg-primary rounded-pill" th:text="${item.tipoUsuario}"></span></td>
+                                        <td class="small" th:text="${item.mina != null ? item.mina.nombre : '—'}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Riesgos -->
+                    <div th:if="${entidad == 'riesgos'}" class="card border-0 shadow-sm">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="sg-table-header">
+                                    <tr><th class="ps-4">Código</th><th>Descripción</th><th>Acciones</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${resultados}">
+                                        <td class="ps-4 text-muted small" th:text="${item.codRiesgo}"></td>
+                                        <td class="fw-semibold" th:text="${item.descripcion}"></td>
+                                        <td><a th:href="@{/admin/riesgos/editar/{id}(id=${item.codRiesgo})}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Zonas -->
+                    <div th:if="${entidad == 'zonas'}" class="card border-0 shadow-sm">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="sg-table-header">
+                                    <tr><th class="ps-4">Nombre</th><th>Tipo</th><th>Estado</th><th>Mina</th><th>Acciones</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${resultados}">
+                                        <td class="ps-4 fw-semibold" th:text="${item.nombre}"></td>
+                                        <td><span class="badge bg-secondary" th:text="${item.tipo}"></span></td>
+                                        <td><span class="badge bg-primary" th:text="${item.estado}"></span></td>
+                                        <td class="small" th:text="${item.mina != null ? item.mina.nombre : '—'}"></td>
+                                        <td><a th:href="@{/admin/exploracion/editar/{id}(id=${item.id})}" class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil"></i></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>

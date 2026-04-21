@@ -4,179 +4,361 @@
 <head th:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${titulo}">SoftGold</title>
+    <title th:text="${titulo != null} ? ${titulo} + ' — SoftGold' : 'SoftGold'">SoftGold</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Montserrat', Arial, sans-serif;
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            color: #00c853 !important;
-            letter-spacing: 2px;
-        }
-
-        .nav-link.active,
-        .nav-link:focus,
-        .nav-link:hover {
-            color: #00c853 !important;
-        }
-
-        .btn-primary,
-        .btn-success {
-            background-color: #00c853;
-            border: none;
-            color: #fff;
-            font-weight: bold;
-            border-radius: 30px;
-        }
-
-        .hero-section {
-            background: linear-gradient(120deg, #98e789 60%, #01b83e 100%);
-            min-height: 350px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            text-align: center;
-        }
-
-
-
-        .logo-footer {
-            width: 60px;
-        }
-
-        .icono {
-            width: 50px;
-        }
-    </style>
-    <script th:src="@{/js/atajos.js}"></script>
-    <script th:src="@{/js/inactividad.js}"></script>
-    <script th:src="@{/js/busqueda.js}"></script>
-    <script th:src="@{/js/tema.js}"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <header th:fragment="header">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" th:href="@{/}">SOFTGOLD
 
+<header th:fragment="header">
+
+    <!-- ===== PUBLIC NAVBAR (visitante no autenticado) ===== -->
+    <th:block th:unless="${isAuthenticated}">
+        <nav class="navbar sg-public-navbar shadow-sm">
+            <div class="container-fluid px-3 px-lg-5">
+                <a class="navbar-brand sg-brand fw-bold" th:href="@{/}">
+                    <i class="bi bi-gem text-warning me-1"></i>SOFTGOLD
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/}" th:classappend="${requestURI == '/'} ? ' active'">
-                                Inicio
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/registro}"
-                                th:classappend="${requestURI == '/registro'} ? ' active'">
-                                Registrarse
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/login}"
-                                th:classappend="${requestURI == '/login'} ? ' active'">
-                                Iniciar Sesión
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/admin}">Panel de Administración</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/usuario/admin}">Panel de Usuario</a>
-                        </li>
-
-                    </ul>
-                    <form class="d-flex ms-3" th:action="@{/buscar}" method="GET">
-                        <input class="form-control me-2" type="search" name="query" placeholder="Buscar en el sistema"
-                            aria-label="Buscar">
-                        <button class="btn btn-outline-success" type="submit">Buscar</button>
-                    </form>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <a th:href="@{/foro}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                        <i class="bi bi-chat-dots me-1"></i>Foro
+                    </a>
+                    <a th:href="@{/soporte/reporte}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                        <i class="bi bi-question-circle me-1"></i>Consultas
+                    </a>
+                    <a th:href="@{/login}" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesión
+                    </a>
+                    <a th:href="@{/registro}" class="btn btn-success btn-sm rounded-pill px-3">
+                        <i class="bi bi-person-plus me-1"></i>Registrarse
+                    </a>
+                    <button id="toggle-tema" class="btn btn-outline-secondary btn-sm rounded-circle" title="Cambiar tema">
+                        <i class="bi bi-circle-half"></i>
+                    </button>
                 </div>
-                <button id="toggle-tema" class="btn btn-outline-secondary ms-2" title="Cambiar tema">
-                    <i class="bi bi-circle-half"></i>
-                </button>
             </div>
         </nav>
-        <!-- Mensajes de feedback global -->
-        <div class="container mt-3">
-            <div class="alert alert-warning" th:if="${advertencia != null}" th:text="${advertencia}"></div>
-            <div class="alert alert-success" th:if="${exito != null}" th:text="${exito}"></div>
-            <div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
-        </div>
-    </header>
+    </th:block>
 
-    <!-- Hero Section -->
-    <section class="hero-section mb-5">
-        <div>
-            <h1 class="display-3 fw-bold">Gestión de Minas</h1>
-            <p class="lead">Administra minas, empleados y mapas con facilidad en <b>SOFTGOLD</b></p>
-            <a href="#" class="btn btn-light btn-lg mt-3 fw-bold">Empezar</a>
-        </div>
-    </section>
+    <!-- ===== SIDEBAR + TOPBAR (usuario autenticado) ===== -->
+    <th:block th:if="${isAuthenticated}">
 
-    <main class="container my-4">
-        <div th:insert="~{::body}"></div>
-    </main>
+        <!-- SIDEBAR -->
+        <aside class="sg-sidebar" id="sgSidebar">
 
-    <div class="container mt-3">
-        <div th:if="${error}" class="alert alert-danger" role="alert">
-            <span th:text="${error}"></span>
+            <!-- Brand -->
+            <div class="sg-sidebar-brand">
+                <i class="bi bi-gem text-warning fs-4"></i>
+                <span class="fw-bold">SOFTGOLD</span>
+                <button class="sg-sidebar-close ms-auto d-lg-none" onclick="toggleSidebar()" aria-label="Cerrar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="sg-sidebar-nav">
+
+                <!-- MENU ADMINISTRADOR -->
+                <th:block th:if="${isAdmin}">
+
+                    <a th:href="@{/admin}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin' or requestURI == '/admin/'} ? ' active'">
+                        <i class="bi bi-speedometer2"></i><span>Panel Principal</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Recursos</div>
+
+                    <a th:href="@{/admin/minas}" class="sg-sidebar-item"
+                       th:classappend="${#strings.startsWith(requestURI, '/admin/minas')} ? ' active'">
+                        <i class="bi bi-gem text-warning"></i><span>Minas</span>
+                    </a>
+                    <a th:href="@{/admin/mapas}" class="sg-sidebar-item"
+                       th:classappend="${#strings.startsWith(requestURI, '/admin/mapas')} ? ' active'">
+                        <i class="bi bi-map text-success"></i><span>Mapas</span>
+                    </a>
+                    <a th:href="@{/admin/riesgos}" class="sg-sidebar-item"
+                       th:classappend="${#strings.startsWith(requestURI, '/admin/riesgos')} ? ' active'">
+                        <i class="bi bi-exclamation-triangle text-danger"></i><span>Riesgos</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Exploración</div>
+
+                    <a th:href="@{/admin/exploracion}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/exploracion' or requestURI == '/admin/exploracion/'} ? ' active'">
+                        <i class="bi bi-geo-alt text-warning"></i><span>Zonas de Exploración</span>
+                    </a>
+                    <a th:href="@{/admin/exploracion/mapa}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/exploracion/mapa'} ? ' active'">
+                        <i class="bi bi-map-fill text-success"></i><span>Mapa de Exploración</span>
+                    </a>
+                    <a th:href="@{/admin/exploracion/crear}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/exploracion/crear'} ? ' active'">
+                        <i class="bi bi-plus-circle"></i><span>Nueva Zona</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Filtros</div>
+
+                    <a th:href="@{/admin/filtros}" class="sg-sidebar-item"
+                       th:classappend="${#strings.startsWith(requestURI, '/admin/filtros')} ? ' active'">
+                        <i class="bi bi-funnel text-primary"></i><span>Búsqueda Avanzada</span>
+                    </a>
+                    <a th:href="@{/admin/filtros(entidad=minas)}" class="sg-sidebar-item">
+                        <i class="bi bi-gem text-warning opacity-75"></i><span>Filtrar Minas</span>
+                    </a>
+                    <a th:href="@{/admin/filtros(entidad=mapas)}" class="sg-sidebar-item">
+                        <i class="bi bi-map text-success opacity-75"></i><span>Filtrar Mapas</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Comunidad</div>
+
+                    <a th:href="@{/foro}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/foro' or requestURI == '/foro/'} ? ' active'">
+                        <i class="bi bi-chat-dots text-info"></i><span>Foro</span>
+                    </a>
+                    <a th:href="@{/foro/crear}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/foro/crear'} ? ' active'">
+                        <i class="bi bi-pencil-square"></i><span>Nuevo Post</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Informes</div>
+
+                    <a th:href="@{/admin/informes}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/informes' or requestURI == '/admin/informes/'} ? ' active'">
+                        <i class="bi bi-bar-chart-fill text-primary"></i><span>Dashboard</span>
+                    </a>
+                    <a th:href="@{/admin/informes/minas}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/informes/minas'} ? ' active'">
+                        <i class="bi bi-gem text-warning opacity-75"></i><span>Reporte Minas</span>
+                    </a>
+                    <a th:href="@{/admin/informes/ambiental}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/informes/ambiental'} ? ' active'">
+                        <i class="bi bi-tree text-success opacity-75"></i><span>Impacto Ambiental</span>
+                    </a>
+                    <a th:href="@{/admin/informes/inventario}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/informes/inventario'} ? ' active'">
+                        <i class="bi bi-boxes text-info opacity-75"></i><span>Inventario</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Personal</div>
+
+                    <a th:href="@{/admin/usuarios/mineros}" class="sg-sidebar-item"
+                       th:classappend="${#strings.startsWith(requestURI, '/admin/usuarios/minero')} ? ' active'">
+                        <i class="bi bi-person-lines-fill text-primary"></i><span>Mineros</span>
+                    </a>
+                    <a th:href="@{/admin/usuarios/empleados}" class="sg-sidebar-item"
+                       th:classappend="${#strings.startsWith(requestURI, '/admin/usuarios/empleado')} ? ' active'">
+                        <i class="bi bi-briefcase text-info"></i><span>Empleados</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Soporte</div>
+
+                    <a th:href="@{/soporte/reporte}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/soporte/reporte'} ? ' active'">
+                        <i class="bi bi-headset text-primary"></i><span>Soporte Técnico</span>
+                    </a>
+                    <a th:href="@{/soporte/tickets}" class="sg-sidebar-item"
+                       th:classappend="${#strings.startsWith(requestURI, '/soporte/tickets')} ? ' active'">
+                        <i class="bi bi-ticket-perforated text-warning"></i><span>Ver Tickets</span>
+                    </a>
+                    <a th:href="@{/admin/seguridad}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/seguridad'} ? ' active'">
+                        <i class="bi bi-shield-check text-success"></i><span>Guía de Seguridad</span>
+                    </a>
+                    <a th:href="@{/admin/cambios}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/cambios'} ? ' active'">
+                        <i class="bi bi-clock-history text-secondary"></i><span>Control de Cambios</span>
+                    </a>
+                    <a th:href="@{/admin/mejora}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/admin/mejora'} ? ' active'">
+                        <i class="bi bi-arrow-up-circle text-info"></i><span>Mejora Continua</span>
+                    </a>
+                    <a th:href="@{/soporte/satisfaccion}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/soporte/satisfaccion'} ? ' active'">
+                        <i class="bi bi-star text-warning"></i><span>Formulario Satisfacción</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Mi Cuenta</div>
+
+                    <a th:href="@{/cuenta/perfil}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/cuenta/perfil'} ? ' active'">
+                        <i class="bi bi-person-circle text-info"></i><span>Mi Perfil</span>
+                    </a>
+                    <a th:href="@{/cuenta/cambiarPassword}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/cuenta/cambiarPassword'} ? ' active'">
+                        <i class="bi bi-key text-warning"></i><span>Cambiar Contraseña</span>
+                    </a>
+
+                </th:block>
+
+                <!-- MENU NO-ADMIN -->
+                <th:block th:unless="${isAdmin}">
+
+                    <a th:href="@{/}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/'} ? ' active'">
+                        <i class="bi bi-house-fill"></i><span>Inicio</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Comunidad</div>
+
+                    <a th:href="@{/foro}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/foro' or requestURI == '/foro/'} ? ' active'">
+                        <i class="bi bi-chat-dots text-info"></i><span>Foro</span>
+                    </a>
+                    <a th:href="@{/foro/crear}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/foro/crear'} ? ' active'">
+                        <i class="bi bi-pencil-square"></i><span>Nuevo Post</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Soporte</div>
+
+                    <a th:href="@{/soporte/reporte}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/soporte/reporte'} ? ' active'">
+                        <i class="bi bi-headset text-primary"></i><span>Soporte Técnico</span>
+                    </a>
+                    <a th:href="@{/soporte/satisfaccion}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/soporte/satisfaccion'} ? ' active'">
+                        <i class="bi bi-star text-warning"></i><span>Formulario Satisfacción</span>
+                    </a>
+
+                    <div class="sg-sidebar-section">Mi Cuenta</div>
+
+                    <a th:href="@{/cuenta/perfil}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/cuenta/perfil'} ? ' active'">
+                        <i class="bi bi-person-circle text-info"></i><span>Mi Perfil</span>
+                    </a>
+                    <a th:href="@{/cuenta/cambiarPassword}" class="sg-sidebar-item"
+                       th:classappend="${requestURI == '/cuenta/cambiarPassword'} ? ' active'">
+                        <i class="bi bi-key text-warning"></i><span>Cambiar Contraseña</span>
+                    </a>
+
+                </th:block>
+
+            </nav>
+
+            <!-- Sidebar footer: usuario + acciones -->
+            <div class="sg-sidebar-footer">
+                <div class="sg-sidebar-user">
+                    <i class="bi bi-person-circle fs-5 flex-shrink-0"></i>
+                    <span class="small text-truncate" th:text="${currentUsername}">usuario</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button id="toggle-tema" class="btn btn-outline-secondary btn-sm flex-fill" title="Cambiar tema">
+                        <i class="bi bi-circle-half me-1"></i>Tema
+                    </button>
+                    <a th:href="@{/logout}" class="btn btn-outline-danger btn-sm flex-fill" title="Cerrar sesión">
+                        <i class="bi bi-box-arrow-right me-1"></i>Salir
+                    </a>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Overlay móvil -->
+        <div class="sg-sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+        <!-- Botón hamburguesa móvil (visible solo cuando sidebar está cerrado) -->
+        <button class="sg-mobile-toggle d-lg-none" id="sgMobileToggle" onclick="toggleSidebar()" aria-label="Menú">
+            <i class="bi bi-list fs-5"></i>
+        </button>
+
+    </th:block>
+
+    <!-- Mensajes flash -->
+    <div class="sg-flash-messages" th:if="${advertencia != null or exito != null or error != null}">
+        <div class="alert alert-warning alert-dismissible fade show mb-2" th:if="${advertencia != null}"
+             role="alert" th:text="${advertencia}">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
-        <p>Tipo de usuario: <span th:text="${usuario.tipoUsuario}"></span></p>
+        <div class="alert alert-success alert-dismissible fade show mb-2" th:if="${exito != null}"
+             role="alert" th:text="${exito}">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <div class="alert alert-danger alert-dismissible fade show mb-2" th:if="${error != null}"
+             role="alert" th:text="${error}">
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     </div>
 
+</header>
 
-    <!-- Modal de atajos -->
+<footer class="sg-footer" th:fragment="footer">
+
+    <!-- Modal atajos de teclado -->
     <div class="modal fade" id="modalAtajos" tabindex="-1" aria-labelledby="atajosLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content shadow">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="atajosLabel">Lista de Atajos</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <h5 class="modal-title" id="atajosLabel"><i class="bi bi-keyboard me-2"></i>Atajos de Teclado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <ul>
-                        <li><strong>Ctrl + B</strong>: Abrir búsqueda rápida</li>
-                        <li><strong>Ctrl + /</strong>: Ver atajos de teclado</li>
-                        <!-- Puedes añadir más si deseas -->
-                    </ul>
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>B</kbd></td><td>Búsqueda rápida</td></tr>
+                            <tr><td><kbd>Ctrl</kbd> + <kbd>/</kbd></td><td>Ver atajos</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid px-4">
+        <div class="row align-items-center py-3">
+            <div class="col-md-4 text-center text-md-start mb-2 mb-md-0">
+                <span class="fw-bold text-success"><i class="bi bi-gem me-1 text-warning"></i>SOFTGOLD</span>
+                <p class="small text-muted mt-1 mb-0">Sistema de Gestión Minera</p>
+                <p class="small text-muted mb-0">&copy; DW1 2025. Todos los derechos reservados.</p>
+            </div>
+            <div class="col-md-4 text-center mb-2 mb-md-0">
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a th:href="@{/soporte/reporte}" class="small text-decoration-none">
+                        <i class="bi bi-headset me-1"></i>Soporte
+                    </a>
+                    <a th:href="@{/soporte/satisfaccion}" class="small text-decoration-none">
+                        <i class="bi bi-star me-1"></i>Satisfacción
+                    </a>
+                    <a th:href="@{/foro}" class="small text-decoration-none">
+                        <i class="bi bi-chat-dots me-1"></i>Foro
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4 text-center text-md-end">
+                <div class="d-flex justify-content-center justify-content-md-end gap-3">
+                    <a href="#" class="fs-5"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="fs-5"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="fs-5"><i class="bi bi-linkedin"></i></a>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="footer mt-5 py-4" th:fragment="footer">
-        <div class="container text-center">
-            <p class="mb-2">
-                Proyecto desarrollado con Java y Spring Framework 6<br>
-                SoftGold. &copy; DW1 2025-1. Todos los derechos reservados.
-            </p>
-            <p class="small">
-                <a href="#" class="text-decoration-underline me-2">Términos de uso</a>
-                <a href="#" class="text-decoration-underline ms-2">Política de privacidad</a>
-            </p>
-            <div class="mt-3">
-                <a href="#" class="me-3"><i class="bi bi-facebook"></i></a>
-                <a href="#" class="me-3"><i class="bi bi-instagram"></i></a>
-            </div>
-        </div>
-    </footer>
-
+    <!-- Scripts globales (dentro del fragmento para que se incluyan en todas las páginas) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script th:src="@{/js/atajos.js}"></script>
+    <script th:src="@{/js/inactividad.js}"></script>
+    <script th:src="@{/js/tema.js}"></script>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sgSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const mobileToggle = document.getElementById('sgMobileToggle');
+            if (!sidebar) return;
+            const isOpen = sidebar.classList.toggle('open');
+            overlay && overlay.classList.toggle('active', isOpen);
+            if (mobileToggle) mobileToggle.style.display = isOpen ? 'none' : '';
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('sgSidebar');
+                if (sidebar && sidebar.classList.contains('open')) toggleSidebar();
+            }
+        });
+    </script>
+</footer>
 </body>
-
 </html>

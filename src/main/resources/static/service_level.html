@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Niveles de Servicio - Sofgold</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 30px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      padding: 25px 30px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #006400;
+      border-bottom: 2px solid #006400;
+      padding-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #e1f5d0;
+    }
+
+    .section {
+      margin-top: 25px;
+    }
+
+    .logs {
+      background: #111;
+      color: #0f0;
+      font-family: "Courier New", monospace;
+      padding: 15px;
+      border-radius: 8px;
+      height: 180px;
+      overflow-y: auto;
+    }
+
+    .btn {
+      display: block;
+      margin: 25px auto;
+      padding: 10px 25px;
+      background-color: #006400;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    .btn:hover {
+      background-color: #004d00;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 0.9em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Gestión de Niveles de Servicio - Sofgold</h1>
+
+    <h2>Métricas Definidas</h2>
+    <table>
+      <tr>
+        <th>Métrica</th>
+        <th>Descripción</th>
+        <th>Objetivo</th>
+        <th>Resultado Actual</th>
+        <th>Estado</th>
+      </tr>
+      <tr>
+        <td>Disponibilidad del sistema</td>
+        <td>Tiempo que el sistema está operativo</td>
+        <td>99%</td>
+        <td>99.3%</td>
+        <td style="color:green;">✅ Cumplido</td>
+      </tr>
+      <tr>
+        <td>Tiempo de respuesta</td>
+        <td>Tiempo promedio de carga de una página</td>
+        <td>&lt; 2s</td>
+        <td>1.74s</td>
+        <td style="color:green;">✅ Cumplido</td>
+      </tr>
+      <tr>
+        <td>Satisfacción del usuario</td>
+        <td>Evaluación promedio de feedback</td>
+        <td>≥ 8/10</td>
+        <td>8.6 / 10</td>
+        <td style="color:green;">✅ Cumplido</td>
+      </tr>
+    </table>
+
+    <div class="section">
+      <h2>Logs del Sistema</h2>
+      <div class="logs" id="logs">
+        [06/11/2025 08:00:01] INFO: Sistema Sofgold inicializado correctamente.<br>
+        [06/11/2025 08:00:03] INFO: Tiempo de respuesta promedio: 1.84s<br>
+        [06/11/2025 08:10:22] INFO: Solicitud de datos del módulo Mina → 1.72s<br>
+        [06/11/2025 08:15:17] INFO: Solicitud de eventos → 1.69s<br>
+        [06/11/2025 08:20:05] INFO: Uptime 99.3% verificado<br>
+        [06/11/2025 08:25:44] INFO: Feedback recibido - Usuario: “Muy satisfecho, sistema estable” (9/10)<br>
+        [06/11/2025 08:30:00] INFO: Monitoreo de rendimiento completado sin alertas.<br>
+      </div>
+    </div>
+
+    <button class="btn" onclick="window.print()">Imprimir Reporte</button>
+
+    <div class="footer">
+      Sistema Sofgold - Gestión de Niveles de Servicio © 2025
+    </div>
+  </div>
+
+</body>
+</html>

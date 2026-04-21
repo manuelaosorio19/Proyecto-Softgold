@@ -21,4 +21,6 @@ public interface PasswordResetServiceIface {
 
     Optional<Usuario> findUserByEmail(String email);
 
+    void deleteTokensByUsuarioId(Long usuarioId);
+
 }

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{plantillas/principal :: head}"></head>
+<body>
+<header th:replace="~{plantillas/principal :: header}"></header>
+
+<main class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-speedometer2 text-success me-2"></i>Dashboard de Informes</h2>
+            <p class="text-muted mb-0">Resumen general del sistema SoftGold.</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a th:href="@{/admin/informes/minas}" class="btn btn-outline-warning btn-sm">Reporte Minas</a>
+            <a th:href="@{/admin/informes/ambiental}" class="btn btn-outline-success btn-sm">Ambiental</a>
+            <a th:href="@{/admin/informes/inventario}" class="btn btn-outline-info btn-sm">Inventario</a>
+        </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="row g-3 mb-5">
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card border-0 shadow-sm text-center p-3 sg-kpi-card">
+                <i class="bi bi-gem fs-2 text-warning mb-2"></i>
+                <div class="display-6 fw-bold" th:text="${totalMinas}">0</div>
+                <small class="text-muted">Minas</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card border-0 shadow-sm text-center p-3 sg-kpi-card">
+                <i class="bi bi-map fs-2 text-success mb-2"></i>
+                <div class="display-6 fw-bold" th:text="${totalMapas}">0</div>
+                <small class="text-muted">Mapas</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card border-0 shadow-sm text-center p-3 sg-kpi-card">
+                <i class="bi bi-exclamation-triangle fs-2 text-danger mb-2"></i>
+                <div class="display-6 fw-bold" th:text="${totalRiesgos}">0</div>
+                <small class="text-muted">Riesgos</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card border-0 shadow-sm text-center p-3 sg-kpi-card">
+                <i class="bi bi-person-lines-fill fs-2 text-primary mb-2"></i>
+                <div class="display-6 fw-bold" th:text="${totalMineros}">0</div>
+                <small class="text-muted">Mineros</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card border-0 shadow-sm text-center p-3 sg-kpi-card">
+                <i class="bi bi-briefcase fs-2 text-info mb-2"></i>
+                <div class="display-6 fw-bold" th:text="${totalEmpleados}">0</div>
+                <small class="text-muted">Empleados</small>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="card border-0 shadow-sm text-center p-3 sg-kpi-card">
+                <i class="bi bi-geo-alt fs-2 text-warning mb-2"></i>
+                <div class="display-6 fw-bold" th:text="${totalZonas}">0</div>
+                <small class="text-muted">Zonas Expl.</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráfico estado zonas -->
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header sg-card-header">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-pie-chart me-2"></i>Zonas por Estado</h6>
+                </div>
+                <div class="card-body">
+                    <div th:each="entry : ${zonasPorEstado}" class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small fw-semibold" th:text="${entry.key}"></span>
+                            <span class="small text-muted" th:text="${entry.value}"></span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar"
+                                 th:classappend="${entry.key == 'EN_EXPLORACION'} ? 'bg-primary' : (${entry.key == 'PENDIENTE'} ? 'bg-warning' : 'bg-danger')"
+                                 role="progressbar"
+                                 th:style="${totalZonas > 0 ? 'width:' + (entry.value * 100 / totalZonas) + '%' : 'width:0%'}">
+                            </div>
+                        </div>
+                    </div>
+                    <p th:if="${totalZonas == 0}" class="text-muted text-center py-3">Sin datos de zonas.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header sg-card-header">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-people me-2"></i>Personal del Sistema</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-around py-3">
+                        <div class="text-center">
+                            <div class="sg-big-number text-primary" th:text="${totalMineros}">0</div>
+                            <small class="text-muted">Mineros</small>
+                        </div>
+                        <div class="vr mx-3" style="height: 60px;"></div>
+                        <div class="text-center">
+                            <div class="sg-big-number text-info" th:text="${totalEmpleados}">0</div>
+                            <small class="text-muted">Empleados</small>
+                        </div>
+                        <div class="vr mx-3" style="height: 60px;"></div>
+                        <div class="text-center">
+                            <div class="sg-big-number text-success" th:text="${totalPosts}">0</div>
+                            <small class="text-muted">Posts Foro</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="mt-4">
+        <h5 class="fw-bold mb-3">Accesos Rápidos</h5>
+        <div class="row g-3">
+            <div class="col-md-3"><a th:href="@{/admin/informes/minas}" class="btn btn-outline-warning w-100"><i class="bi bi-gem me-1"></i>Reporte Minas</a></div>
+            <div class="col-md-3"><a th:href="@{/admin/informes/ambiental}" class="btn btn-outline-success w-100"><i class="bi bi-tree me-1"></i>Impacto Ambiental</a></div>
+            <div class="col-md-3"><a th:href="@{/admin/informes/inventario}" class="btn btn-outline-info w-100"><i class="bi bi-boxes me-1"></i>Inventario</a></div>
+            <div class="col-md-3"><a th:href="@{/admin/exploracion/mapa}" class="btn btn-outline-primary w-100"><i class="bi bi-map-fill me-1"></i>Mapa Exploración</a></div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{plantillas/principal :: footer}"></footer>
+</body>
+</html>
